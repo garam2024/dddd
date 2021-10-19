@@ -11,7 +11,7 @@ from .sqlMethod import sqlMethod
 import json, bson
 from db_info import dbinfo
 
-
+# 안녕하십니까!!!!
 
 class adminAdapter():
 
