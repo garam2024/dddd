@@ -1,4 +1,4 @@
-function onResults(results) { 
+function onResults(results) {
     try{
         if (results.multiHandLandmarks) {
             if (results.multiHandLandmarks.length != 0) {
@@ -18,7 +18,7 @@ function onResults(results) {
     }catch(e){
        console.log(e)
     }
-   
+
 }
 
 function getDefaultSkeleton() {
@@ -50,38 +50,29 @@ function getDefaultSkeleton() {
     return landmarks;
 }
 
-const hands = new Hands({
+
+let hands = new Hands({
     locateFile: (file) => {
         return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
     }
 });
 
 hands.setOptions({
-    maxNumHands: 2,
-    minDetectionConfidence: 0.5,
-    minTrackingConfidence: 0.5
+  maxNumHands: 2,
+  modelComplexity: 1,
+  minDetectionConfidence: 0.5,
+  minTrackingConfidence: 0.5
 });
 
-var loadCount = 0;
 hands.onResults(onResults);
 
-function modelLoad() {
 
-    try {
-        setTimeout(2000,hands.send({ image: imgElement }));
-    }catch(e){
-        hands = new Hands({
-            locateFile: (file) => {
-                return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
-            }
-        });
-        hands.setOptions({
-            maxNumHands: 2,
-            minDetectionConfidence: 0.5,
-            minTrackingConfidence: 0.5
-        });
+var loadCount = 0;
 
-    }
+async function modelLoad() {
+
+    await hands.send({image: imgElement});
+
 
     if(loadCount == 0 ){
         // 로딩화면

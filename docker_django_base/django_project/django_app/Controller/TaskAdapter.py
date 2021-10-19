@@ -8,21 +8,27 @@ from django.contrib.auth.hashers import check_password
 from ..models import *
 from .status_dic import porocess_status, record_status, deny_status, pay_status
 from .sqlMethod import sqlMethod
+<<<<<<< .mine
 from db_info import dbinfo
+||||||| .r259
+=======
+from db_info import dbinfo
+
+
+>>>>>>> .r284
 class TaskAdapter:
 
     def __init__(self):
-        
+
         self.res_dic = {}
 
     ## 라벨링 작업 목록 리스트 데이터를 가져오는 로직
     def get_task_list(self, request):
 
-
         try:
             query_set = WorkList.objects.all()
 
-            task_list = query_set.filter(task_status = porocess_status['작업 대기'])
+            task_list = query_set.filter(task_status=porocess_status['작업 대기'])
 
             return zip(range(1, len(task_list) + 1), task_list)
         except:
@@ -30,21 +36,19 @@ class TaskAdapter:
 
     def get_abnormal_task_list(self, request):
 
-
         try:
             query_set = WorkList.objects.all()
 
-            task_list = query_set.filter(task_status = porocess_status['작업 대기'], work_type = '이상행동')
+            task_list = query_set.filter(task_status=porocess_status['작업 대기'], work_type='이상행동')
 
             return zip(range(1, len(task_list) + 1), task_list)
         except:
             raise
 
-    #이상행동/인터페이스 동시검색
+    # 이상행동/인터페이스 동시검색
     def get_normal_work_list(self, request):
 
         sqlMethodClsss = sqlMethod()
-
 
         # column_list = [
         #                 "work_id",
@@ -54,6 +58,7 @@ class TaskAdapter:
         #                 "(select code_nm  from django_app_code_mst where code_id = work_type) work_type_nm",
         #               ]
         # option = "and (select dap.group_id from django_app_profile dap where dap.account_id = '"+str(request.user)+"') = group_id and work_type = 'interface'  order by work_id limit 5"
+<<<<<<< .mine
         table_name = "((select work_id,work_type,work_status, "+\
         "(select code_nm  from django_app_code_mst where code_id = work_status)  work_status_nm,"+\
         "(select code_nm  from django_app_code_mst where code_id = work_type) work_type_nm "+\
@@ -71,6 +76,46 @@ class TaskAdapter:
         "and work_type = 'normal' limit 5) "+\
         "order by work_id limit 10) a"
         work_list = sqlMethodClsss.select_workList(table_name=table_name, data_dic ={"1":"1"})
+||||||| .r259
+        table_name = "((select work_id,work_type,work_status, "+\
+        "(select code_nm  from django_app_code_mst where code_id = work_status)  work_status_nm,"+\
+        "(select code_nm  from django_app_code_mst where code_id = work_type) work_type_nm "+\
+        " from django_app_worklist where 1 = 1 and work_status in ('A') "+\
+        "and (select dap.group_id from django_app_profile dap where dap.account_id ='" +str(request.user)+ "') = group_id "+\
+        "and work_type = 'interface' limit 5) "+\
+        "union all "+\
+        "(select work_id,work_type,work_status, "+\
+        "(select code_nm  from django_app_code_mst where code_id = work_status)  work_status_nm, "+\
+        "(select code_nm  from django_app_code_mst where code_id = work_type) work_type_nm "+\
+        "from django_app_worklist "+\
+        "where 1 = 1 "+\
+        "and work_status in ('A') "+\
+        "and (select dap.group_id from django_app_profile dap where dap.account_id ='" +str(request.user)+ "') = group_id "+\
+        "and work_type = 'normal' limit 5) "+\
+        "order by work_id limit 10) a"
+        work_list = sqlMethodClsss.select_workList(table_name=table_name, data_dic ={"1":"1"})
+=======
+        table_name = "((select work_id,work_type,work_status, " + \
+                     "(select code_nm  from django_app_code_mst where code_id = work_status)  work_status_nm," + \
+                     "(select code_nm  from django_app_code_mst where code_id = work_type) work_type_nm " + \
+                     " from django_app_worklist where 1 = 1 and work_status in ('" + dbinfo.status[
+                         'status_work_deagi'] + "') " + \
+                     "and (select dap.group_id from django_app_profile dap where dap.account_id ='" + str(
+            request.user) + "') = group_id " + \
+                     "and work_type = 'interface' limit 5) " + \
+                     "union all " + \
+                     "(select work_id,work_type,work_status, " + \
+                     "(select code_nm  from django_app_code_mst where code_id = work_status)  work_status_nm, " + \
+                     "(select code_nm  from django_app_code_mst where code_id = work_type) work_type_nm " + \
+                     "from django_app_worklist " + \
+                     "where 1 = 1 " + \
+                     "and work_status in ('" + dbinfo.status['status_work_deagi'] + "') " + \
+                     "and (select dap.group_id from django_app_profile dap where dap.account_id ='" + str(
+            request.user) + "') = group_id " + \
+                     "and work_type = 'normal' limit 5) " + \
+                     "order by work_id limit 10) a"
+        work_list = sqlMethodClsss.select_workList(table_name=table_name, data_dic={"1": "1"})
+>>>>>>> .r284
 
         # column_list = [
         #                 "work_id",
@@ -83,25 +128,20 @@ class TaskAdapter:
         # list = sqlMethodClsss.select_workList(table_name="django_app_worklist", data_dic ={"1":"1"}, status_list ={"A"},column_list= column_list, option=option)
         # work_list.append(list)
 
-
         sqlMethodClsss.close()
 
-        return zip(range(1, len(work_list) + 1),work_list)
-
+        return zip(range(1, len(work_list) + 1), work_list)
 
     def get_interface_task_list(self, request):
-
 
         try:
             query_set = WorkList.objects.all()
 
-            task_list = query_set.filter(task_status = porocess_status['작업 대기'], work_type = '인터페이스')
+            task_list = query_set.filter(task_status=porocess_status['작업 대기'], work_type='인터페이스')
         except:
             raise
 
         return zip(range(1, len(task_list) + 1), task_list)
-
-
 
     ## 나의 작업 페이지의 데이터를 가져오는 로직
     def get_my_task_list(self, request):
@@ -121,14 +161,23 @@ class TaskAdapter:
             dic = {
                 "daw.worker_id": str(get_user_name)
             }
+<<<<<<< .mine
             option = "and daw.work_status in('"+dbinfo.status['status_work_run']+"')"
             task_list = sql_query.select_workList(table_name="django_app_worklist daw", data_dic=dic, status_list=None, column_list=join_column, option=option)
+||||||| .r259
+            option = "and daw.work_status in('B')"
+            task_list = sql_query.select_workList(table_name="django_app_worklist daw", data_dic=dic, status_list=None, column_list=join_column, option=option)
+=======
+            option = "and daw.work_status in('" + dbinfo.status['status_work_run'] + "')"
+            task_list = sql_query.select_workList(table_name="django_app_worklist daw", data_dic=dic, status_list=None,
+                                                  column_list=join_column, option=option)
+>>>>>>> .r284
 
             sql_query.close()
         except:
             pass
 
-        for item in task_list :
+        for item in task_list:
 
             print(item.get('work_id'))
 
@@ -138,7 +187,8 @@ class TaskAdapter:
                 sql_query = sqlMethod()
                 dic = {"work_id": str(item.get('work_id'))}
                 option = "order by reg_date desc limit 1"
-                record_key = sql_query.select_workList(table_name="django_app_workhistory", data_dic=dic, status_list=None, option=option)
+                record_key = sql_query.select_workList(table_name="django_app_workhistory", data_dic=dic,
+                                                       status_list=None, option=option)
                 print("record_key : ", record_key)
                 sql_query.close()
 
@@ -146,7 +196,7 @@ class TaskAdapter:
             except:
                 raise
 
-            if len(record_key) > 0 :
+            if len(record_key) > 0:
 
                 try:
                     sql_query = sqlMethod()
@@ -173,4 +223,3 @@ class TaskAdapter:
 
         return zip(task_list, deny_list)
 
-        

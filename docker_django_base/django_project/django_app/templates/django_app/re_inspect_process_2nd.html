@@ -560,6 +560,16 @@
             document.querySelector(".btn-save").disabled = false;
         })
     </script>
+    <script>
+        jQuery('#handpose').change(function() {
+            var state = jQuery("#handpose option:selected").val();
+            if(state != null){
+                document.querySelector(".btn-save").disabled = false;
+            }else{
+                document.querySelector(".btn-save").disabled = true;
+            }
+        });
+    </script>
 
     <script>  // video, xml 다운로드
         $(document).ready(function () {

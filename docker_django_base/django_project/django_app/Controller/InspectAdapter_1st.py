@@ -12,8 +12,14 @@ import re
 import json, bson, os
 
 from .status_dic import porocess_status, record_status, deny_status, pay_status
-
 from db_info import dbinfo
+
+<<<<<<< .mine
+from db_info import dbinfo
+||||||| .r259
+
+=======
+>>>>>>> .r284
 class InspectAdapter_1st:
 
     def __init__(self):
@@ -30,15 +36,23 @@ class InspectAdapter_1st:
 
         sql_query = sqlMethod()
         column_list = [
-                "work_id",
-                "work_type",
-                "work_status",
-                "(select code_nm  from django_app_code_mst where code_id = work_status)  work_status_nm",
-                "(select code_nm  from django_app_code_mst where code_id = work_type) work_type_nm",
-        ]       
+            "work_id",
+            "work_type",
+            "work_status",
+            "(select code_nm  from django_app_code_mst where code_id = work_status)  work_status_nm",
+            "(select code_nm  from django_app_code_mst where code_id = work_type) work_type_nm",
+        ]
         option = "order by work_id limit 10"
         try:
+<<<<<<< .mine
             inspect_list = sql_query.select_workList(table_name='django_app_worklist', data_dic={'work_status': dbinfo.status['status_1cha_inspect_deagi']}, status_list=None, column_list= column_list, option=option)
+||||||| .r259
+            inspect_list = sql_query.select_workList(table_name='django_app_worklist', data_dic={'work_status': 'C'}, status_list=None, column_list= column_list, option=option)
+=======
+            inspect_list = sql_query.select_workList(table_name='django_app_worklist', data_dic={
+                'work_status': dbinfo.status['status_1cha_inspect_deagi']}, status_list=None, column_list=column_list,
+                                                     option=option)
+>>>>>>> .r284
         except:
             raise
 
@@ -114,11 +128,18 @@ class InspectAdapter_1st:
                        "(select dacm.code_nm from django_app_code_mst dacm where dacm.code_id = daw.work_status ) str_status, "
                        "(select dacm.code_nm from django_app_code_mst dacm where dacm.code_id = daw.work_type) str_type "}
         dic = {
+<<<<<<< .mine
             "daw.work_status" : dbinfo.status['status_1cha_inspect_run'],
+||||||| .r259
+            "daw.work_status" : "D",
+=======
+            "daw.work_status": dbinfo.status['status_1cha_inspect_run'],
+>>>>>>> .r284
             "daw.inspect_id1": str(get_user_name)
         }
         try:
-            task_list = sql_query.select_workList(table_name="django_app_worklist daw", data_dic=dic, status_list=None, column_list=join_column, option=None)
+            task_list = sql_query.select_workList(table_name="django_app_worklist daw", data_dic=dic, status_list=None,
+                                                  column_list=join_column, option=None)
         except:
             raise
         sql_query.close()
@@ -136,11 +157,18 @@ class InspectAdapter_1st:
         # check_inspect_ = WorkList.objects.filter(inspect_status=porocess_status['1차 검수 진행'], inspect_user_id=request.user
         sql_query = sqlMethod()
         check_inspect_dic = {
+<<<<<<< .mine
             "work_status":dbinfo.status['status_1cha_inspect_run'],
+||||||| .r259
+            "work_status": "D",
+=======
+            "work_status": dbinfo.status['status_1cha_inspect_run'],
+>>>>>>> .r284
             "inspect_id1": str(request.user)
         }
         try:
-            check_inspect = sql_query.select_workList(table_name="django_app_worklist", data_dic=check_inspect_dic, status_list=None)
+            check_inspect = sql_query.select_workList(table_name="django_app_worklist", data_dic=check_inspect_dic,
+                                                      status_list=None)
         except:
             raise
         ## 똑같은 같은 검수 작업이 2개 이상 신청될 수 없도록 하는 로직
@@ -154,7 +182,8 @@ class InspectAdapter_1st:
             # inspect_query = WorkList.objects.get(task_num = task_num)
         inspect_dic = {"work_id": task_num}
         try:
-            inspect_query = sql_query.select_workList(table_name="django_app_worklist", data_dic=inspect_dic, status_list=None)
+            inspect_query = sql_query.select_workList(table_name="django_app_worklist", data_dic=inspect_dic,
+                                                      status_list=None)
         except:
             raise
 
@@ -164,15 +193,16 @@ class InspectAdapter_1st:
 
 
         ## 검수 체크 로직 구동
-        # if inspector_name == request.user : 
+        # if inspector_name == request.user :
         # if not inspector_name == request.user or \
         #         not inspector_name or inspector_name == 'None':
         tasker_name = str(inspect_query[0].get("worker_id"))
         if not tasker_name == request.user or \
-            not inspector_name or inspector_name == 'None':
-                # print("검수 중복 체크 완료, 이름 중복 없음")
+                not inspector_name or inspector_name == 'None':
+            # print("검수 중복 체크 완료, 이름 중복 없음")
             # print("Inspect DB Query INSERT EVENT")
 
+<<<<<<< .mine
                 now = datetime.now().strftime("%Y%m%d %H%M%S")
                 set_dic = {
                     "work_status": "D",
@@ -200,6 +230,63 @@ class InspectAdapter_1st:
                 print("insert success!")
                 sql_query.close()
                 return True
+||||||| .r259
+                now = datetime.now().strftime("%Y%m%d %H%M%S")
+                set_dic = {
+                    "work_status": "D",
+                    "inspect_id1": str(request.user),
+                }
+                update_dic = {
+                    "work_id": task_num
+                }
+                try:
+                    sql_query.update_status(table_name="django_app_worklist", data_dic=set_dic, con_dic=update_dic)
+                except:
+                    raise
+                print("update success!")
+                insert_dic = {
+                    "work_id": task_num,
+                    "work_status": 'D',
+                    "reg_id": str(request.user),
+                    "reg_date": now,
+                    "group_id" : inspect_group_id
+                }
+                try:
+                    sql_query.insert_workList(table_name="django_app_workhistory", data_dic=insert_dic)
+                except:
+                    raise
+                print("insert success!")
+                sql_query.close()
+                return True
+=======
+            now = datetime.now().strftime("%Y%m%d %H%M%S")
+            set_dic = {
+                "work_status": dbinfo.status['status_1cha_inspect_run'],
+                "inspect_id1": str(request.user),
+            }
+            update_dic = {
+                "work_id": task_num
+            }
+            try:
+                sql_query.update_status(table_name="django_app_worklist", data_dic=set_dic, con_dic=update_dic)
+            except:
+                raise
+            print("update success!")
+            insert_dic = {
+                "work_id": task_num,
+                "work_status": dbinfo.status['status_1cha_inspect_run'],
+                "reg_id": str(request.user),
+                "reg_date": now,
+                "group_id": inspect_group_id
+            }
+            try:
+                sql_query.insert_workList(table_name="django_app_workhistory", data_dic=insert_dic)
+            except:
+                raise
+            print("insert success!")
+            sql_query.close()
+            return True
+>>>>>>> .r284
 
         else:
             ## 잘못된 접근인 경우
@@ -243,7 +330,8 @@ class InspectAdapter_1st:
             "work_id": task_num
         }
         try:
-            work_list_info = sql_query.select_workList(table_name="django_app_worklist", data_dic=data_dic, status_list=None)
+            work_list_info = sql_query.select_workList(table_name="django_app_worklist", data_dic=data_dic,
+                                                       status_list=None)
         except:
             raise
         sql_query.close()
@@ -267,7 +355,8 @@ class InspectAdapter_1st:
                 "reg_id": user_name
             }
             try:
-                query = sql_query.select_workList(table_name="django_app_workhistory", data_dic=data_dic, status_list=None)
+                query = sql_query.select_workList(table_name="django_app_workhistory", data_dic=data_dic,
+                                                  status_list=None)
             except:
                 raise
 
@@ -301,8 +390,18 @@ class InspectAdapter_1st:
                                           task_num=task_num)
 
         query_set = sqlMethod().select_workList(table_name='django_app_worklist',
+<<<<<<< .mine
                                                 data_dic={'work_status': dbinfo.status['status_1cha_inspect_run'], 'inspect_id1': str(user_name),
                                                           'work_id': task_num}, status_list={dbinfo.status['status_1cha_inspect_run']})
+||||||| .r259
+                                                data_dic={'work_status': 'D', 'inspect_id1': str(user_name),
+                                                          'work_id': task_num}, status_list={'D'})
+=======
+                                                data_dic={'work_status': dbinfo.status['status_1cha_inspect_run'],
+                                                          'inspect_id1': str(user_name),
+                                                          'work_id': task_num},
+                                                status_list={dbinfo.status['status_1cha_inspect_run']})
+>>>>>>> .r284
 
         # worklist_key = query_set.work_id
 
@@ -311,21 +410,54 @@ class InspectAdapter_1st:
 
         try:
             query_set_check = sqlMethod().select_workList(table_name='django_app_workhistory',
+<<<<<<< .mine
                                                           data_dic={'work_status': dbinfo.status['status_1cha_inspect_run'], 'reg_id': str(user_name),
                                                                     'work_id': task_num}, status_list={dbinfo.status['status_1cha_inspect_run']})
+||||||| .r259
+                                                          data_dic={'work_status': 'D', 'reg_id': str(user_name),
+                                                                    'work_id': task_num}, status_list={'D'})
+=======
+                                                          data_dic={
+                                                              'work_status': dbinfo.status['status_1cha_inspect_run'],
+                                                              'reg_id': str(user_name),
+                                                              'work_id': task_num},
+                                                          status_list={dbinfo.status['status_1cha_inspect_run']})
+>>>>>>> .r284
         except:
             raise
 
         if query_set_check.exists():
 
             query_set_add_ = sqlMethod().select_workList(table_name='django_app_workhistory',
+<<<<<<< .mine
                                                          data_dic={'work_status': dbinfo.status['status_1cha_inspect_run'], 'reg_id': str(user_name),
                                                                    'work_id': task_num}, status_list={dbinfo.status['status_1cha_inspect_run']})
+||||||| .r259
+                                                         data_dic={'work_status': 'D', 'reg_id': str(user_name),
+                                                                   'work_id': task_num}, status_list={'D'})
+=======
+                                                         data_dic={
+                                                             'work_status': dbinfo.status['status_1cha_inspect_run'],
+                                                             'reg_id': str(user_name),
+                                                             'work_id': task_num},
+                                                         status_list={dbinfo.status['status_1cha_inspect_run']})
+>>>>>>> .r284
 
             try:
                 query_set_add = sqlMethod().insert_workList(table_name='django_app_workhistory',
+<<<<<<< .mine
                                                             data_dic={'work_id': str(task_num), 'work_status': dbinfo.status['status_1cha_inspect_deagi'],
                                                                       'reg_id': str(user_name), 'reg_date': datetime.now()})
+||||||| .r259
+                                                            data_dic={'work_id': str(task_num), 'work_status': 'C',
+                                                                      'reg_id': str(user_name), 'reg_date': datetime.now()})
+=======
+                                                            data_dic={'work_id': str(task_num),
+                                                                      'work_status': dbinfo.status[
+                                                                          'status_1cha_inspect_deagi'],
+                                                                      'reg_id': str(user_name),
+                                                                      'reg_date': datetime.now()})
+>>>>>>> .r284
             except:
                 raise
 
@@ -396,7 +528,13 @@ class InspectAdapter_1st:
 
             sql_query = sqlMethod()
 
+<<<<<<< .mine
             update_val = {"work_status":dbinfo.status['status_1cha_inspect_deagi'], "inspect_id1" : ""}
+||||||| .r259
+            update_val = {"work_status": "C", "inspect_id1" : ""}
+=======
+            update_val = {"work_status": dbinfo.status['status_1cha_inspect_deagi'], "inspect_id1": ""}
+>>>>>>> .r284
             update_con = {"work_id": str(task_num)}
 
             try:
@@ -458,7 +596,7 @@ class InspectAdapter_1st:
             return True
 
     ## 작업 완료 시 JSON 정보와 저장 정보를 마무리 하는 기능
-    def inspect_complete_check(self, request, task_num, work_type):
+    def inspect_complete_check(self, request, task_num, work_type,dict_check):
         # print(dict_memo)
         ## decode() 시 "\ufeff" 같은 문제가 붙는 문제를 해결하기 위해 sig를 추가한 utf-8-sig를 적용
         ## ex) ['\ufeffmain text','next text'] --> utf-8
@@ -478,7 +616,14 @@ class InspectAdapter_1st:
         # task_num=task_num)
         a = sqlMethod()
         try:
+<<<<<<< .mine
             query_set = a.update_status(table_name='django_app_worklist', data_dic={'work_status': dbinfo.status['status_2cha_inspect_deagi']},
+||||||| .r259
+            query_set = a.update_status(table_name='django_app_worklist', data_dic={'work_status': 'E'},
+=======
+            query_set = a.update_status(table_name='django_app_worklist',
+                                        data_dic={'work_status': dbinfo.status['status_2cha_inspect_deagi']},
+>>>>>>> .r284
                                         con_dic={'work_id': str(task_num)})
         except:
             raise
@@ -519,7 +664,26 @@ class InspectAdapter_1st:
         print(save_json_data)
         group_id = save_json_data.get('group')
         print('그룹 아이디')
+        if dict_check != '반려':
+            dic = {
+                'work_id': str(task_num),
+                'work_status': dbinfo.status['status_2cha_inspect_deagi'],
+                'memo': '',
+                'reg_id': str(user_name),
+                'reg_date': str(datetime.now()),
+                'group_id': group_id
+            }
+        else:
+            dic = {
+                'work_id': str(task_num),
+                'work_status': dbinfo.status['status_1cha_companion_return'],
+                'memo': '',
+                'reg_id': str(user_name),
+                'reg_date': str(datetime.now()),
+                'group_id': group_id
+            }
 
+<<<<<<< .mine
         dic = {
             'work_id': str(task_num),
             'work_status': dbinfo.status['status_2cha_inspect_deagi'],
@@ -529,6 +693,18 @@ class InspectAdapter_1st:
             'group_id': group_id
         }
 
+||||||| .r259
+        dic = {
+            'work_id': str(task_num),
+            'work_status': 'E',
+            'memo': '',
+            'reg_id': str(user_name),
+            'reg_date': str(datetime.now()),
+            'group_id': group_id
+        }
+
+=======
+>>>>>>> .r284
         # if work_type == 'interface':
         for key in save_json_data['memo']:
             new_string += '클립' + str(key['attributes']) + '번:' + str(key['rejection']) + '/ '
@@ -631,18 +807,20 @@ class InspectAdapter_1st:
                 print(tmp_list)
                 for tmp_str in tmp_list:
                     if len(tmp_str) != 0:
-                        print("memo split______________________________________________________________________!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                        print(
+                            "memo split______________________________________________________________________!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                         print(tmp_str)
                         tmp_num = str(tmp_str).strip()[3]
                         print(tmp_num)
-                        a.update_status(table_name='django_app_tasklist', data_dic={'reject_status':'Y'}, con_dic={'work_id': work_id, 'task_id': tmp_num})
+                        a.update_status(table_name='django_app_tasklist', data_dic={'reject_status': 'Y'},
+                                        con_dic={'work_id': work_id, 'task_id': tmp_num})
 
             dic = {'work_id': work_id,
-                       'work_status': work_status,
-                       'reg_id': str(user_name),
-                       'memo': memo,
-                       'reg_date': str(datetime.now()),
-                       'group_id': group_id
+                   'work_status': work_status,
+                   'reg_id': str(user_name),
+                   'memo': memo,
+                   'reg_date': str(datetime.now()),
+                   'group_id': group_id
                    }
             print(dic)
 

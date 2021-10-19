@@ -137,8 +137,16 @@ class TaskInfoAdapter:
             sqlMethodClsss = sqlMethod()
             # 중복작업 존재 여부 확인
             check_work = sqlMethodClsss.select_workList(table_name="django_app_worklist", data_dic={"work_id": work_id},
+<<<<<<< .mine
                                                         status_list={dbinfo.status['status_work_run'], 'D', 'F', 'H', 'R1', 'R2', 'R3', 'R5', 'R6',
                                                                      'R7'},
+||||||| .r259
+                                                        status_list={'B', 'D', 'F', 'H', 'R1', 'R2', 'R3', 'R5', 'R6',
+                                                                     'R7'},
+=======
+                                                        status_list={dbinfo.status['status_work_run'], dbinfo.status['status_1cha_inspect_run'], dbinfo.status['status_2cha_inspect_run'], dbinfo.status['status_3cha_inspect_run'], dbinfo.status['status_1cha_companion_return'], dbinfo.status['status_2cha_companion_return'],  dbinfo.status['status_3cha_companion_return'], dbinfo.status['status_1cha_man_companion_return'], dbinfo.status['status_1cha_man_companion_return'],
+                                                                     dbinfo.status['status_3cha_man_companion_return']},
+>>>>>>> .r284
                                                         column_list=None)
 
             work_length = len(check_work)
@@ -233,7 +241,7 @@ class TaskInfoAdapter:
             print("task length : ", len(check_task))
 
             dic = {'worker_id': user_name, "work_id": task_num}
-            status = {"C", "R0", "R1"}
+            status = {dbinfo.status['status_1cha_inspect_deagi'],  dbinfo.status['status_manage_return'], dbinfo.status['status_1cha_companion_return']}
             check_status = sql_str.select_workList(table_name='django_app_worklist', data_dic=dic,
                                                    status_list=status)
             print("check_status, ", check_status)
@@ -251,7 +259,7 @@ class TaskInfoAdapter:
 
                 con_dic = {'worker_id': user_name, "work_id": task_num}
                 set_dic = {
-                    "work_status": "B"
+                    "work_status": dbinfo.status['status_work_run']
                 }
                 sql_str.update_status(table_name='django_app_worklist', data_dic=set_dic, con_dic=con_dic)
 
@@ -262,13 +270,13 @@ class TaskInfoAdapter:
 
                 con_dic = {'worker_id': user_name, "work_id": task_num}
                 set_dic = {
-                    "work_status": "B"
+                    "work_status":  dbinfo.status['status_work_run']
                 }
                 sql_str.update_status(table_name='django_app_worklist', data_dic=set_dic, con_dic=con_dic)
 
                 val_dic = {
                     "work_id": str(task_num),
-                    "work_status": "B",
+                    "work_status":  dbinfo.status['status_work_run'],
                     "reg_id": str(user_name),
                     "reg_date": str(datetime.now()),
                     "group_id": check_status[0].get("group_id")
@@ -284,7 +292,7 @@ class TaskInfoAdapter:
             sql_str.close()
             return False
 
-    ## 작업 정보를 가져오는 모듈 
+    ## 작업 정보를 가져오는 모듈
     def get_task_info(self, request, user_name, task_num):
 
         print("User Name : ", user_name)
@@ -299,12 +307,36 @@ class TaskInfoAdapter:
                 "worker_id": user_name,
                 "work_id": task_num
             }
-            task_info = sql_query.select_workList(table_name="django_app_worklist", data_dic=data_dic, status_list=None)
+            column = {" * ,"
+                      "(select memo from django_app_workhistory i where i.work_id= '"+task_num+"' "
+                      "and i.history_id = (SELECT MAX(history_id) prehistory FROM django_app_workhistory WHERE history_id NOT IN (SELECT MAX(history_id) "
+                      "FROM django_app_workhistory GROUP BY work_id) and work_id = '"+task_num+"' GROUP BY work_id )) memo"
+                      }
+            task_info = sql_query.select_workList(table_name="django_app_worklist", data_dic=data_dic, status_list=None, column_list=column)
             print("!_________________________________________________________!")
             print(task_info[0])
             sql_query.close()
 
             return task_info[0]
+        except:
+            raise
+
+    def get_history_info(self, task_num):
+        sql_query = sqlMethod()
+        print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+        try:
+            data_dic = {
+                "work_status": dbinfo.status['status_work_run'],
+                "work_id": task_num
+            }
+            option = 'order by history_id desc limit 1'
+            history_info = sql_query.select_workList(table_name="django_app_workhistory", data_dic=data_dic, status_list=None, option=option)
+            sql_query.close()
+            print(history_info)
+            if len(history_info) == 0:
+                return None
+            else:
+                return history_info[0]
         except:
             raise
 
@@ -433,7 +465,7 @@ class TaskInfoAdapter:
 
             sql_query = sqlMethod()
 
-            update_val = {"work_status": "A", "worker_id": ""}
+            update_val = {"work_status": dbinfo.status['status_work_deagi'], "worker_id": ""}
             update_con = {"work_id": str(task_num)}
 
             sql_query.update_status(table_name="django_app_worklist", data_dic=update_val, con_dic=update_con)
@@ -501,7 +533,7 @@ class TaskInfoAdapter:
             ## 작업 완료 시 작업 저장
             try:
                 a = sqlMethod()
-                a.update_status(table_name='django_app_worklist', data_dic={'work_status': 'C'},
+                a.update_status(table_name='django_app_worklist', data_dic={'work_status': dbinfo.status['status_1cha_inspect_deagi']},
                                 con_dic={'work_id': str(task_num)})
                 a.close()
                 # query_set.task_status = porocess_status['작업 완료']
@@ -527,7 +559,7 @@ class TaskInfoAdapter:
 
                 # query_set_2.work_state = True
                 a = sqlMethod()
-                dic = {'work_id': str(task_num), 'work_status': 'C', 'reg_id': str(user_name),
+                dic = {'work_id': str(task_num), 'work_status': dbinfo.status['status_1cha_inspect_deagi'], 'reg_id': str(user_name),
                        'reg_date': str(datetime.now()), 'group_id': group_id}
                 a.insert_workList(table_name='django_app_workhistory', data_dic=dic)
 
@@ -540,7 +572,7 @@ class TaskInfoAdapter:
 
             # pay_check_query = PayList.objects.filter(reg_id = user_name)
 
-            # if pay_check_query.exists() : 
+            # if pay_check_query.exists() :
 
             #     last_pay_query = PayList.objects.filter(reg_id = user_name).last()
 
@@ -594,7 +626,7 @@ class TaskInfoAdapter:
         # ## 1차 검수 완료
         # query_set = WorkList.objects.filter(task_num = task_num, inspect_status = porocess_status['1차 검수 진행'], inspect_user_id = user_name)
 
-        # if query_set: 
+        # if query_set:
 
         #     query_set = query_set[0]
 
@@ -664,14 +696,14 @@ class TaskInfoAdapter:
         # ## 2차 검수 완료
         # query_set = WorkList.objects.get(task_num = task_num, inspect_status_2 = porocess_status['2차 검수 진행'], inspect_user_id_2 = user_name)
 
-        # if query_set: 
+        # if query_set:
 
         #     pass
 
         # ## 3차 검수 완료
         # query_set = WorkList.objects.get(task_num = task_num, inspect_status_3 = porocess_status['3차 검수 진행'], inspect_user_id_3 = user_name)
 
-        # if query_set : 
+        # if query_set :
 
         #     pass
 
@@ -718,7 +750,7 @@ class TaskInfoAdapter:
 
         # # pay_check_query = PayList.objects.filter(reg_id = user_name)
 
-        # # if pay_check_query.exists() : 
+        # # if pay_check_query.exists() :
 
         # #     last_pay_query = PayList.objects.filter(reg_id = user_name).last()
 

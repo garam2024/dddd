@@ -41,7 +41,8 @@ urlpatterns = [
     path('duplicate_check/', base_views.duplicateCheck, name="duplicate_check"),
 
 
-
+    # 작업상태목록불러오기
+    path('get_statusDic',base_views.get_statusDic,name = 'get_statusDic'),
 
     # 라벨링 작업 리스트 페이지
     path('work_list', base_views.Work_list.as_view(), name="work_list"),
@@ -122,6 +123,8 @@ urlpatterns = [
     # 작업 페이지 동작 기능 모듈 : 이전 버젼 잔재 모듈
     path("re_work_process/<str:task_num>/<str:work_type>/check_api", task_views.check_api, name='check_api'),
     path("re_work_process/<str:task_num>/<str:work_type>/task_middle_cancel", task_views.task_middle_cancel_module, name='task_middle_cancel'),
+    path("re_work_process/<str:task_num>/<str:work_type>/get_statusDic", base_views.get_statusDic, name = "get_statusDic"),
+
 
 
 
@@ -224,7 +227,6 @@ urlpatterns = [
     path("re_inspect_process_3rd/<str:task_num>/check_api", inspect_views_3rd.check_api, name = 'check_api'),
     path("re_inspect_process_3rd/<str:task_num>/inspect_middle_cancel", inspect_views_3rd.inspect_middle_cancel_module, name ='inspect_middle_cancel'),
     path("re_inspect_process_3rd/<str:task_num>/<str:work_type>/check_task", inspect_views_3rd.check_task, name='check_task'),]
-
 
 
 

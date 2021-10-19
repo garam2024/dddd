@@ -103,7 +103,7 @@ const hand_labelling = {
         form.elements.note.value ='';
         note_form.options.length = 0;
       }
-      // form의 sumbit이 클릭되면 실행할 내용
+      // form의 sumbit이 클릭되면 실행할 내용 클립 저장 버튼
       form.onsubmit = function (e) {
           saveSkeleton();
           e.preventDefault();
@@ -201,20 +201,7 @@ const hand_labelling = {
           });
   
   
-          function chkFinalCmpl(){
-              // final_complete check
-              let completeCnt = 0
-              document.querySelectorAll('#sets').forEach(el => {
-                  if(el.classList.contains('complete')){
-                      completeCnt++;
-                  }
-              });
-              var ele = document.getElementById('div_btn');
-              var eleCount = ele.childElementCount;
-              if(completeCnt == eleCount){
-                  document.getElementById("final_complete").disabled = false;
-              }
-          }
+
           setTimeout(chkFinalCmpl, 2000)
   
       };
@@ -227,7 +214,7 @@ const hand_labelling = {
   
       form.dataset.region = region.id;
   }
-  
+
   // //상민
   // function findClip(status, data){
   //     var nowSelectedId = document.querySelector('#frames').dataset.regionId
@@ -261,6 +248,7 @@ const hand_labelling = {
           clipStatus.innerHTML = ''
           clipStatus.innerHTML = `<i class='glyphicon glyphicon-ok'></i> 완료`
           clipStatus.classList.remove('working')
+          clipStatus.classList.remove('rejection')
           clipStatus.classList.add('complete')
       break
   

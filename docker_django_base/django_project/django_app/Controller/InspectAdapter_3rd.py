@@ -7,23 +7,28 @@ from django.contrib.auth.hashers import check_password
 from ..models import *
 from datetime import datetime
 
-
 from PIL import Image
-
 
 from .sqlMethod import *
 
-import json,bson,os
+import json, bson, os
 
 from .status_dic import porocess_status, record_status, deny_status, pay_status
+<<<<<<< .mine
 from db_info import dbinfo
+||||||| .r259
+
+=======
+from db_info import dbinfo
+
+>>>>>>> .r284
+
 class InspectAdapter_3rd:
 
     def __init__(self):
-        
+
         self.res_dic = {}
 
-    
     ## 검수 페이지에서 신청 가능한 검수 목록 데이터를 가져오는 로직
     def get_inspect_list(self, request):
 
@@ -38,25 +43,34 @@ class InspectAdapter_3rd:
                 "(select code_nm  from django_app_code_mst where code_id = work_status)  work_status_nm",
                 "(select code_nm  from django_app_code_mst where code_id = work_type) work_type_nm",
             ]
+<<<<<<< .mine
             option = "and (select dap.group_id from django_app_profile dap where dap.account_id = '"+str(request.user)+"') = group_id order by work_id limit 10"
             inspect_list = sql_query.select_workList(table_name='django_app_worklist', data_dic={'work_status': dbinfo.status['status_3cha_inspect_deagi']}, status_list=None, column_list= column_list, option=option)
+||||||| .r259
+            option = "and (select dap.group_id from django_app_profile dap where dap.account_id = '"+str(request.user)+"') = group_id order by work_id limit 10"
+            inspect_list = sql_query.select_workList(table_name='django_app_worklist', data_dic={'work_status': 'G'}, status_list=None, column_list= column_list, option=option)
+=======
+            option = "and (select dap.group_id from django_app_profile dap where dap.account_id = '" + str(
+                request.user) + "') = group_id order by work_id limit 10"
+            inspect_list = sql_query.select_workList(table_name='django_app_worklist', data_dic={
+                'work_status': dbinfo.status['status_3cha_inspect_deagi']}, status_list=None, column_list=column_list,
+                                                     option=option)
+>>>>>>> .r284
         except:
             raise
 
         # filter_inspect_list = []
 
         # ## 작업 승인이 된 경우에만 검수 리스트에 나타나야하므로 조건에 해당하는 데이터만 list에 추가
-        # for item in inspect_list : 
+        # for item in inspect_list :
 
         #     record = WorkRecord.objects.filter(work_category = "Q", work_state = "True", worklist_task_num_id = item.task_num)
 
         #     if record.exists() :
 
         #         filter_inspect_list.append(item)
-        
-        
+
         return zip(range(1, len(inspect_list) + 1), inspect_list)
-    
 
     # def mirror_db(self, request, task_num):
     #
@@ -100,14 +114,12 @@ class InspectAdapter_3rd:
     #
     #             inspect_history_set.save()
 
-            
-            
     ##  나의 작업 페이지에서 검수 리스트 데이터를 가져옴
     def get_my_inspect_list(self, request):
 
         work_list_all = WorkList.objects.all()
         get_user_name = request.user
-        
+
         # task_list = work_list_all.filter(inspect_status_3 = porocess_status['3차 검수 진행'], inspect_user_id_3 = get_user_name)
 
         try:
@@ -116,10 +128,17 @@ class InspectAdapter_3rd:
                            "(select dacm.code_nm from django_app_code_mst dacm where dacm.code_id = daw.work_status ) str_status, "
                            "(select dacm.code_nm from django_app_code_mst dacm where dacm.code_id = daw.work_type) str_type "}
             dic = {
+<<<<<<< .mine
                 "daw.work_status" :dbinfo.status['status_3cha_inspect_deagi'],
+||||||| .r259
+                "daw.work_status" : "H",
+=======
+                "daw.work_status": dbinfo.status['status_3cha_inspect_deagi'],
+>>>>>>> .r284
                 "daw.inspect_id3": str(get_user_name)
             }
-            task_list = sql_query.select_workList(table_name="django_app_worklist daw", data_dic=dic, status_list=None, column_list=join_column, option=None)
+            task_list = sql_query.select_workList(table_name="django_app_worklist daw", data_dic=dic, status_list=None,
+                                                  column_list=join_column, option=None)
             sql_query.close()
             print("Inspect List : check : ", task_list)
         except:
@@ -127,10 +146,9 @@ class InspectAdapter_3rd:
 
         return zip(range(1, len(task_list) + 1), task_list)
 
-
-      ## 검수 신청 시 로직 구동
+    ## 검수 신청 시 로직 구동
     def change_db_info(self, request, user_name, task_num):
-        
+
         # work_record_1st_inspec = WorkRecord.objects.filter(task_num = task_num, work_category = record_status['3차 검수 신청'])
         # check_query = WorkRecord.objects.filter(task_num = task_num, work_category = record_status['2차 검수 신청'])
 
@@ -141,7 +159,8 @@ class InspectAdapter_3rd:
                 "work_status": dbinfo.status['status_3cha_inspect_deagi'],
                 "inspect_id3": str(request.user)
             }
-            check_inspect = sql_query.select_workList(table_name="django_app_worklist", data_dic=check_inspect_dic, status_list=None)
+            check_inspect = sql_query.select_workList(table_name="django_app_worklist", data_dic=check_inspect_dic,
+                                                      status_list=None)
             ## 똑같은 같은 검수 작업이 2개 이상 신청될 수 없도록 하는 로직
 
             if len(check_inspect) > 0:
@@ -149,8 +168,9 @@ class InspectAdapter_3rd:
                 return 304
 
             ## inspect_query = WorkList.objects.get(task_num = task_num)
-            inspect_dic={ "work_id" : task_num}
-            inspect_query = sql_query.select_workList(table_name="django_app_worklist", data_dic=inspect_dic, status_list=None)
+            inspect_dic = {"work_id": task_num}
+            inspect_query = sql_query.select_workList(table_name="django_app_worklist", data_dic=inspect_dic,
+                                                      status_list=None)
         except:
             raise
 
@@ -163,16 +183,16 @@ class InspectAdapter_3rd:
         inspect_group_id = str(inspect_query[0].get("group_id"))
 
         if not tasker_name == request.user or \
-            not inspector_name_1st == request.user or \
-            not inspector_name_2nd == request.user or \
-            not inspector_name or inspector_name == 'None':
+                not inspector_name_1st == request.user or \
+                not inspector_name_2nd == request.user or \
+                not inspector_name or inspector_name == 'None':
 
             ## 검수 체크 로직 구동
-            # if inspector_name == request.user : 
+            # if inspector_name == request.user :
 
             print("검수 중복 체크 완료, 이름 중복 없음")
             print("Inspect DB Query INSERT EVENT")
-            
+
             # work_record = WorkRecord()
             #
             # # get_task_info = query_set.filter(task_num = task_num)
@@ -207,7 +227,7 @@ class InspectAdapter_3rd:
                     "work_status": dbinfo.status['status_3cha_inspect_deagi'],
                     "reg_id": str(request.user),
                     "reg_date": now,
-                    "group_id" :inspect_group_id
+                    "group_id": inspect_group_id
                 }
                 sql_query.insert_workList(table_name="django_app_workhistory", data_dic=insert_dic)
                 print("insert success!")
@@ -216,14 +236,13 @@ class InspectAdapter_3rd:
             except:
                 raise
 
-        else :
+        else:
 
             ## 잘못된 접근인 경우
             if inspector_name != request.user:
                 sql_query.close()
                 return 404
             sql_query.close()
-
 
         # ## 해당하는 Query가 없는 경우
         # else:
@@ -238,7 +257,7 @@ class InspectAdapter_3rd:
         #     work_list_info.inspect_start_date_2 = datetime.now()
 
         #     task_unique_number = work_list_info.task_num
-            
+
         #     work_record.worklist_task_num_id = task_unique_number
         #     work_record.task_num = task_num
         #     work_record.work_category = record_status['3차 검수 신청']
@@ -249,7 +268,7 @@ class InspectAdapter_3rd:
         #     work_record.save()
 
         #     return True
-    
+
     ## 유저 정보에 해당하는 검수 리스트 데이터를 가져오는 로직
     def get_inspect_info(self, request, user_name, task_num):
 
@@ -265,16 +284,17 @@ class InspectAdapter_3rd:
                 "inspect_id3": str(user_name),
                 "work_id": task_num
             }
-            work_list_info = sql_query.select_workList(table_name="django_app_worklist", data_dic=data_dic, status_list=None)
+            work_list_info = sql_query.select_workList(table_name="django_app_worklist", data_dic=data_dic,
+                                                       status_list=None)
             sql_query.close()
             return work_list_info[0]
         except:
             raise
 
     ## 재 작업 시 로직 구동
-    def rework_logic(self, request, user_name, task_num) : 
+    def rework_logic(self, request, user_name, task_num):
 
-        try :
+        try:
             print("Inspect rework_logic")
 
             # query = WorkRecord.objects.filter(task_num = task_num, work_category= record_status['2차 검수 신청'], reg_id = user_name)
@@ -313,17 +333,18 @@ class InspectAdapter_3rd:
         user_name = request.user
 
         try:
-            query_set = WorkList.objects.get(inspect_status_2 = porocess_status['3차 검수 진행'], inspect_user_id_3 = user_name, task_num = task_num)
+            query_set = WorkList.objects.get(inspect_status_2=porocess_status['3차 검수 진행'], inspect_user_id_3=user_name,
+                                             task_num=task_num)
 
             worklist_key = query_set.task_num
 
-            query_set_check = WorkRecord.objects.filter(work_category = record_status['3차 검수 신청'], reg_id = user_name, worklist_task_num_id = worklist_key)
+            query_set_check = WorkRecord.objects.filter(work_category=record_status['3차 검수 신청'], reg_id=user_name,
+                                                        worklist_task_num_id=worklist_key)
         except:
             raise
 
         if query_set_check.exists():
 
-            
             task_unique_number = query_set.task_num
 
             workrecord = WorkRecord()
@@ -334,15 +355,11 @@ class InspectAdapter_3rd:
             workrecord.reg_id = user_name
             workrecord.reg_date = datetime.now()
 
-
             workrecord.save()
-
-
-
 
             query_set.inspect_status_2 = porocess_status['3차 검수 대기']
             query_set.inspect_user_id_3 = 'None'
-            
+
             query_set.complete_check = porocess_status['3차 검수 대기']
 
             query_set.save()
@@ -357,8 +374,6 @@ class InspectAdapter_3rd:
 
             return False
 
-
-        
     ## 검수 작업 취소 기능 로직
     def inspect_cancel(self, request, task_num):
 
@@ -390,7 +405,13 @@ class InspectAdapter_3rd:
 
             sql_query = sqlMethod()
 
+<<<<<<< .mine
             update_val = {"work_status": dbinfo.status['status_3cha_inspect_deagi'], "inspect_id3" : ""}
+||||||| .r259
+            update_val = {"work_status": "G", "inspect_id3" : ""}
+=======
+            update_val = {"work_status": dbinfo.status['status_3cha_inspect_deagi'], "inspect_id3": ""}
+>>>>>>> .r284
             update_con = {"work_id": str(task_num)}
 
             sql_query.update_status(table_name="django_app_worklist", data_dic=update_val, con_dic=update_con)
@@ -413,12 +434,8 @@ class InspectAdapter_3rd:
             sql_query.close()
             return False
 
-
-
-
-
     ## 같은 작업자가 작업과 검수를 동시에 할 수 없도록 처리하는 로직
-    def get_compare_result(self, request, task_num) :
+    def get_compare_result(self, request, task_num):
 
         try:
             sql_query = sqlMethod()
@@ -434,12 +451,12 @@ class InspectAdapter_3rd:
             inspector_2nd_id = get_info[0].get("inspect_id2")
 
             if str(worker_id) == str(user_id) or \
-                str(inspector_1st_id) == str(user_id) or \
-                str(inspector_2nd_id) == str(user_id):
+                    str(inspector_1st_id) == str(user_id) or \
+                    str(inspector_2nd_id) == str(user_id):
                 sql_query.close()
                 return False
 
-            else :
+            else:
                 sql_query.close()
                 return True
         except:
@@ -480,7 +497,13 @@ class InspectAdapter_3rd:
                     work_status = dbinfo.status['status_2cha_inspect_deagi']
             elif work_stat == dbinfo.status['status_3cha_inspect_run']:
                 if memo_stat:
+<<<<<<< .mine
                     work_status =dbinfo.status['status_complet']
+||||||| .r259
+                    work_status = "I"
+=======
+                    work_status = dbinfo.status['status_complet']
+>>>>>>> .r284
                 else:
                     work_status = dbinfo.status['status_3cha_companion_return']
             a.update_status(table_name='django_app_worklist', data_dic={'work_status': work_status},

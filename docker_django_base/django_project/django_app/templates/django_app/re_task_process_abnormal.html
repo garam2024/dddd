@@ -56,6 +56,7 @@
             a[0].click();
             a.remove();
     };
+    var memo = '{{task_info.memo}}';
     </script>
 
 <body itemscope itemtype="http://schema.org/WebApplication">
@@ -107,6 +108,10 @@
         <h2>클립 영역</h2>
         <div id="clips">
 
+        </div>
+        <div class="retask-rejection">
+            <h2>반려사유</h2>
+            <textarea readonly="" id="markRejection" class="form-control"></textarea>
         </div>
     </section>
     <section class="editing-area">

@@ -1,3 +1,7 @@
+
+
+
+
 let occupantMap = {driver:"운전자", passenger : "승객"};
 let dataMap = {emotion:'감정', action:'이상행동'};
 let emotionMap = { e1:'기쁨', e2:'분노', e3:'놀람', e4:'슬픔', e5:'중립'};
@@ -824,3 +828,8 @@ class ImageLabeler {
         }
     }
 }
+
+
+
+
+

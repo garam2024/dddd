@@ -192,6 +192,9 @@ class Re_Task_process(TemplateView):
 
                 self.res_dic['task_info'] = task_info
                 self.res_dic['message_info'] = message_context
+                ##경진
+                history_info = TaskInfoAdapter().get_history_info(task_num)
+                self.res_dic['history_info'] = history_info
                 
                 task_db_list = getTaskInfo().task_db_select_all(user_name, task_num)
                 self.res_dic['task_region'] = str(task_db_list)

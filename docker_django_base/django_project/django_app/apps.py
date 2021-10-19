@@ -40,5 +40,6 @@ class StartupAppConfig(AppConfig):
             dbinfo.status[codeRow["program_var_nm"]] = codeRow["code_id"]
             dbinfo.message[codeRow["program_var_nm"]] = codeRow["code_nm"]
 
+        dbinfo.status["statusAll"] = result_dic
         print(getattr(settings, 'GLOBAL_CODE', None))
         print("======ffffff====ffff====%s" % dbinfo.status)

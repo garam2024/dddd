@@ -196,7 +196,7 @@
      
      Object.keys(wavesurfer.regions.list).map(id => {
          let region = wavesurfer.regions.list[id]
-         console.log(region)
+         // console.log(region)
          array.push({ id: id, start: region.start, status: region.status })
      })
  
@@ -322,7 +322,7 @@
 
              if(attributesNum.value != ''){
                  var rejectionInfo =  returned_work.rejection.value == '반려 사유 없음'? textarea.value : returned_work.rejection.value
-                 textarea.value = textarea.value + attributesNum.value + '번: ' + rejectionInfo
+                 textarea.value = textarea.value + rejectionInfo
                  statusRejection('반려', textarea.value)
             }else{
                 alert('선택된 클립이 없습니다.')
@@ -339,28 +339,23 @@
  
  function statusRejection(status, val){
      if(val == '0') return
+     console.log(sptRegions[nowSet[0]][nowClip[0]])
 
-     for(let key in wavesurfer.regions.list){
-         console.log((nowSet[0] * 5) + nowClip[0])
-         console.log(wavesurfer.regions.list[key].attributes)
-         if(wavesurfer.regions.list[key].attributes == (nowSet[0] * 5) + nowClip[0]){
-             console.log('작동' + status)
-             let element = document.getElementById(wavesurfer.regions.list[key].id)//리전 
-             wavesurfer.regions.list[key].data['status'] = status
+     for(let i = 0; i < sptRegions[nowSet[0]].length; i++){
+            if(sptRegions[nowSet[0]][i].attributes == sptRegions[nowSet[0]][nowClip[0]].attributes){
+             let element = document.getElementById(sptRegions[nowSet[0]][i].id)//리전
+             sptRegions[nowSet[0]][i].data['status'] = status
              clipStatusMark(element.querySelector('.clip-status'), status)
+
              if(status === '반려'){
-                 wavesurfer.regions.list[key].data['rejection'] =
-                 wavesurfer.regions.list[key].data['rejection']? wavesurfer.regions.list[key].data['rejection']+ ' / ' + val: val
-                 console.log(wavesurfer.regions.list[key].data['rejection'])
-                 console.log(memoArray)
-                 console.log(wavesurfer.regions.list[key])
+                 sptRegions[nowSet[0]][i].data['rejection'] =
+                 sptRegions[nowSet[0]][i].data['rejection']? sptRegions[nowSet[0]][i].data['rejection']+ ' / ' + val: val
              }else{
-                 if(wavesurfer.regions.list[key].data['rejection']){
-                     delete wavesurfer.regions.list[key].data['rejection']
- 
+                 if(sptRegions[nowSet[0]][i].data['rejection']){
+                     delete sptRegions[nowSet[0]][i].data['rejection']
+
                      clipStatusMark(element.querySelector('.clip-status'), '제거')
-                     wavesurfer.regions.list[key].data['status'] = ''
-                     console.log(wavesurfer.regions.list[key])
+                     sptRegions[nowSet[0]][i].data['status'] = ''
                  }
              }
 
@@ -371,7 +366,7 @@
                if (window.location.pathname == '/admin/index/adminview'){
                 task_api_url = "/admin/index/adminview/task_api"
                 param = {
-                     id: wavesurfer.regions.list[key].id,
+                     id: sptRegions[nowSet[0]][i].id,
                      start: form.elements.start.value,
                      end: form.elements.end.value,
                      attributes: form.elements.attributes.value,
@@ -380,34 +375,27 @@
                      data: {
                          note: form.elements.note.value,
                          handpose: form.elements.handpose.value,
-                         skeleton: wavesurfer.regions.list[key].data.skeleton,
+                         skeleton: sptRegions[nowSet[0]][i].data.skeleton,
                          status: status === '반려'? status : '',
                      }
                  }
 
-                }
-               else {
-                task_api_url = 'task_api'
-
-                param = {
-                     id: wavesurfer.regions.list[key].id,
-                     start: form.elements.start.value,
-                     end: form.elements.end.value,
-                     attributes: form.elements.attributes.value,
-                     group: document.getElementById("groupId").value,
-                     data: {
-                         note: form.elements.note.value,
-                         handpose: form.elements.handpose.value,
-                         skeleton: wavesurfer.regions.list[key].data.skeleton,
-                         status: status === '반려'? status : '',
+                }else{
+                    task_api_url = 'task_api'
+                    param = {
+                         id: sptRegions[nowSet[0]][i].id,
+                         start: form.elements.start.value,
+                         end: form.elements.end.value,
+                         attributes: form.elements.attributes.value,
+                         group: document.getElementById("groupId").value,
+                         data: {
+                             note: form.elements.note.value,
+                             handpose: form.elements.handpose.value,
+                             skeleton: sptRegions[nowSet[0]][i].data.skeleton,
+                             status: status === '반려'? status : '',
+                         }
                      }
-                 }
-
-
                 }
-
-
-
 
                  if(status === '반려'){
                     param.data.rejection = val
@@ -416,7 +404,7 @@
                     console.log(arrayIndex)
                     if(arrayIndex != -1){ //있으면 업데이트
                         memoArray[arrayIndex] = {
-                             attributes: form.elements.attributes.value,
+                            attributes: form.elements.attributes.value,
                             rejection: val
                         }
                     }else{ //없으면 추가
@@ -426,7 +414,7 @@
                         })
                     }
                  }
- 
+
                  $.ajax({
                      type : 'POST',
                      url : task_api_url,
@@ -439,17 +427,18 @@
                          //상민
                          // alert("정보가 업데이트되었습니다.")
                          console.log('정보 업데이트')
-                         setMarkInit()            
+                         setMarkInit()
                      },
                      error : function(e){
                          // console.log('Error');
                          // console.log(e);
                      }
-                 });
-             }())
-         }
-     }
+                 }); //ajax
+             }())//IIFE
+         }//if
+     }//for
  }
+
  
  function statusWorking(){
      for(let key in wavesurfer.regions.list){

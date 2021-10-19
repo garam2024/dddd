@@ -44,6 +44,8 @@ from ..Controller.InspectAdapter_3rd import *
 from ..Controller.adminAdapter import * 
 
 from datetime import datetime
+from db_info import dbinfo
+from django.http import JsonResponse
 
 URL_LOGIN = 'index'
 decorators = [csrf_exempt, login_required(login_url=URL_LOGIN)]
@@ -543,3 +545,20 @@ class interface_guide_list(TemplateView):
         self.res_dic['profile'] = get_user_name
 
         return render(request, self.template_name, self.res_dic)
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+def get_statusDic(request):
+
+
+    # result = dbinfo.status["statusAll"]
+    result_dic = dbinfo.status["statusAll"]
+
+    # for codeRow in result_dic:
+    #     print("=====================%s" % codeRow)
+    #     print("%s=%s" % (codeRow["program_var_nm"], codeRow["code_id"]))
+    #     dbinfo.status[codeRow["program_var_nm"]] = codeRow["code_id"]
+    #     dbinfo.message[codeRow["program_var_nm"]] = codeRow["code_nm"]
+    # result = dbinfo.status
+    result = dbinfo.status
+    return JsonResponse(result, safe = False)

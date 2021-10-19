@@ -234,7 +234,7 @@ class Re_Task_process(TemplateView):
 
                 print("작업은 1개씩만 할 수 있습니다.")
 
-                messages.info(request, dbinfo.message["mes_work_auth_needed"])
+                messages.info(request, dbinfo.message["mes_work_max_1"])
 
                 return redirect('mywork_record')
 

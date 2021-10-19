@@ -291,10 +291,25 @@ searchForm.addEventListener('submit', e => {
         }
     })
 })
+var dbinfo
+//pathname 에 따라 페이지 설정해주기
 
+
+$.ajax({
+    type:'POST',
+    url : '/get_statusDic',
+    async:false,
+    success : function(data){
+        dbinfo = data
+        console.log(dbinfo)
+    },
+    error:function(err){
+    alert('작업상태불러오기실패_새로고침을눌러주세요')
+    },
+    })
 //a , j, k, r4, l, i,
 function statusButton(val){
-    var condition = ['A', 'J', 'K', 'R4', 'L', 'I']
+    var condition = [dbinfo['status_work_deagi'], dbinfo['status_1cha_companion_cansel'], dbinfo['status_2cha_companion_cansel'], dbinfo['status_job_cansel'], dbinfo['status_3cha_companion_cansel'], dbinfo['status_complet']]
 
     if(condition.indexOf(val) == -1){
         return true
@@ -325,16 +340,16 @@ function group(group){
 function userByStatus(status){
 
     switch(status){
-        case 'B' || 'R1':
+        case dbinfo['status_work_run'] || dbinfo['status_1cha_companion_return']:
             return 1
             break
-        case 'D' || 'R2':
+        case dbinfo['status_1cha_companion_return'] || dbinfo['status_2cha_companion_return']:
             return 2
             break
-        case 'F' || 'R3':
+        case dbinfo['status_2cha_inspect_run'] ||  dbinfo['status_3cha_companion_return']:
             return 3
             break
-        case 'H' || 'R4':
+        case dbinfo['status_3cha_inspect_run'] || dbinfo['status_job_cansel']:
             return 4
             break
         case undefined:

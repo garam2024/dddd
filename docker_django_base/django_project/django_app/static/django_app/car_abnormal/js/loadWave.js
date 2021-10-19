@@ -1,3 +1,19 @@
+var dbinfo
+//pathname 에 따라 페이지 설정해주기
+
+
+$.ajax({
+    type:'POST',
+    url : '/get_statusDic',
+    async:false,
+    success : function(data){
+        dbinfo = data
+        console.log(dbinfo)
+    },
+    error:function(err){
+    alert('작업상태불러오기실패_새로고침을눌러주세요')
+    },
+    })
 
 
 const inputFile = document.getElementById("file");
@@ -73,12 +89,30 @@ fileLoad.addEventListener('keydown', function(event) {
     };
 });
 
+//function checkStatus(_var){
+//
+//
+//    var boolean = statusArray.map(arr => {
+//         if(arr == _var){
+//            return true
+//         }
+//    })
+//
+//    if(boolean){
+//        return boolean
+//    }else{
+//        return false
+//    }
+//}
+var statusArray = [dbinfo['status_work_run'],dbinfo['status_1cha_inspect_deagi'],dbinfo['status_1cha_inspect_run'],dbinfo['status_2cha_inspect_deagi'], dbinfo.status['status_manage_return'], dbinfo.status['status_1cha_man_companion_return']]
+
+
 inputFile.addEventListener("change", function(){
 
     if(window.location.pathname == '/admin/index/adminview'){
 
       var work_status_admin = document.getElementById("work_status").value
-                if (work_status_admin == "B" || work_status_admin == "C"  || work_status_admin == "D"  || work_status_admin == "E"  || work_status_admin == "R0"  || work_status_admin == "R5"){
+                if (statusArray.includes(work_status_admin)){
                 console.log(work_status_admin,"true")
                 document.getElementById("restorationBtn").disabled = false
                 document.getElementById("addRejection").disabled = false
@@ -88,7 +122,6 @@ inputFile.addEventListener("change", function(){
                 document.getElementById("restorationBtn").disabled = true
                 document.getElementById("addRejection").disabled = true
                 }
-
     }
 
 
@@ -155,7 +188,7 @@ inputFile.addEventListener("change", function(){
         wavesurfer.on('ready', function () {
 
             canvasArea.classList.remove('disable')
-            if(work_status == 'B'){
+            if(work_status == dbinfo['status_work_run']){
                     wavesurfer.enableDragSelection({
                     drag: false,
                     resize : false,
@@ -182,7 +215,7 @@ inputFile.addEventListener("change", function(){
 
         wavesurfer.on('region-update-end', function(region, e){
 
-            if(work_status == 'B'){
+            if(work_status == dbinfo['status_work_run']){
 
                 //saveClip()
                 createClip(region)
@@ -192,7 +225,7 @@ inputFile.addEventListener("change", function(){
                 if(Object.keys(wavesurfer.regions.list).length>1){
                     regionOver(region)
                 }
-            }else if (work_stat == 'C'){
+            }else if (work_status ==dbinfo['status_1cha_inspect_deagi']){
 
                 wavesurfer.enableDragSelection({
                     drag: false,

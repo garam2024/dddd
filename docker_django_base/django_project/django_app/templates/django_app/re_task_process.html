@@ -378,9 +378,8 @@
 
 
     <!-- [js] START ------------------------------------------------------------------------------------------- -->
-
     <script>
-        //경진 프레임 및 손모양 라벨링 선택시 저장버튼 활성화
+        //경진 손모양 라벨링 선택시 저장버튼 활성화
         jQuery('#handpose').change(function() {
             var state = jQuery("#handpose option:selected").val();
             if(state != null){
@@ -389,6 +388,12 @@
                 document.querySelector(".btn-save").disabled = true;
             }
         });
+    </script>
+
+    <script>
+        modelLoad.addEventListener('click', e => {
+            document.querySelector(".btn-save").disabled = false;
+        })
     </script>
     
     <script>  // video, xml 다운로드
@@ -489,10 +494,7 @@
 
     <script>  // video 업로드
         var mode = '재작업'
-        
-        // //상민
-        var store = {}
-    
+
         // video load button
         const inputFile = document.getElementById("file");
         const fileLoad = document.getElementById('fileLoad')
@@ -622,14 +624,6 @@
 
                 // 클립 5개 묶음 버튼 생성
                 setClipButton(sptRegions.length);
-                
-                // //상민
-                window.store['allRegions'] = allRegions
-                window.store['clipInfo'] = clipInfo
-                window.store['sptRegions'] = sptRegions
-                console.log(store)
-
-
 
                 // final_complete check
                 let completeCnt = 0
@@ -647,10 +641,10 @@
 
             // //상민
             setMarkInit()
-            bringRejection(sptRegions)
+           // bringRejection(sptRegions)
         })
 
-
+/*
         function bringRejection(array){
             console.log('반려 사유가 있으면 가져온다.')
             let markRejection = document.querySelector('#markRejection')
@@ -668,7 +662,7 @@
                 markRejection.value.replace(' ', '')
             }
         }
-
+*/
         // function selectedCheck(){
         //     var handpose = document.querySelector('#handpose')
         //     var note = document.querySelector('#note')

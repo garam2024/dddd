@@ -499,6 +499,23 @@
     </script>
 
     <script>  // video 업로드
+
+        var dbinfo
+        //pathname 에 따라 페이지 설정해주기
+
+
+        $.ajax({
+            type:'POST',
+            url : '/get_statusDic',
+            async:false,
+            success : function(data){
+                dbinfo = data
+                console.log(dbinfo)
+            },
+            error:function(err){
+            alert('작업상태불러오기실패_새로고침을눌러주세요')
+            },
+            })
         var mode = '재검수'
 
         // //상민
@@ -574,7 +591,9 @@
 
 
                 var work_status_admin = document.getElementById("work_status").value
-                if (work_status_admin == "B" || work_status_admin == "C"  || work_status_admin == "D"  || work_status_admin == "E"  || work_status_admin == "R0"  || work_status_admin == "R5"){
+
+                var statusArray = [dbinfo['status_work_run'],dbinfo['status_1cha_inspect_deagi'],dbinfo['status_1cha_inspect_run'],dbinfo['status_2cha_inspect_deagi'], dbinfo.status['status_manage_return'], dbinfo.status['status_1cha_man_companion_return']]
+                if (statusArray.includes(work_status_admin)){
                 console.log(work_status_admin,"true")
 
                 }

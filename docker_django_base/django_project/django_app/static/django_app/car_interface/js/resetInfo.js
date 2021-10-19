@@ -71,9 +71,10 @@
             document.getElementById("note").disabled = true;
 
         }
+        setMarkInit()
+        chkFinalCmpl();
         window.wavesurfer.clearMarkers();
         clearCanvas();
-
     }
 };
 
@@ -108,4 +109,19 @@ function resetRegions(){
     }
     // wavesurfer.regions.list = {};
     // localStorage.regions = "";
+}
+
+function chkFinalCmpl(){
+      // final_complete check
+      let completeCnt = 0
+      document.querySelectorAll('#sets').forEach(el => {
+          if(el.classList.contains('complete')){
+              completeCnt++;
+          }
+      });
+      var ele = document.getElementById('div_btn');
+      var eleCount = ele.childElementCount;
+      if(completeCnt == eleCount){
+          document.getElementById("final_complete").disabled = false;
+      }
 }

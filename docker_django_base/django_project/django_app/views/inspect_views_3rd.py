@@ -324,7 +324,6 @@ def task_api(request, task_num):
     message = 1
 
     ret={"message":message}
-
     return HttpResponse(json.dumps(ret), content_type="application/json")
 
 

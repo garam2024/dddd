@@ -1,5 +1,5 @@
 {% load static %}
-
+안녕
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -41,6 +41,8 @@
   <div id="adminAlert" style="display:none;">{{ message }}</div>
 
 {% endfor %}
+
+
 
     <header class="header">
         <h1 class="logo">
@@ -109,6 +111,27 @@
                 </ul>
 
             </div>
+            <!--작업상태 dbinfo 딕셔너리 가져오기  -->
+<!--              <script>-->
+<!--                                var dbinfo-->
+<!--                                $.ajax({-->
+<!--                                    type:'POST',-->
+<!--                                    url : '/get_statusDic',-->
+<!--                                    async:false,-->
+<!--                                    success : function(data){-->
+<!--                                        dbinfo = data-->
+<!--                                        console.log(dbinfo)-->
+<!--                                    },-->
+<!--                                    error:function(err){-->
+<!--                                    alert('작업상태불러오기실패_새로고침을눌러주세요')-->
+<!--                                    },-->
+<!--                                    })-->
+<!--                            </script>-->
+
+
+
+
+
             <div class="tab">
                 <h3>작업 현황</h3>
                 <div class="tab-table">
@@ -132,22 +155,22 @@
 <!--                                    작업 상태 :-->
                                     <select id="workStatus" name="workStatus" class="form-control">
                                         <option value="">작업상태</option>
-                                        <option value="A">작업대기</option>
-                                        <option value="B">작업진행</option>
-                                        <option value="C">1차 검수 대기</option>
-                                        <option value="D">1차 검수 진행</option>
-                                        <option value="E">2차 검수 대기</option>
-                                        <option value="F">2차 검수 진행</option>
-                                        <option value="G">3차 검수 대기</option>
-                                        <option value="H">3차 검수 진행</option>
-                                        <option value="I">작업완료</option>
-                                        <option value="R1">1차 검수 반려</option>
-                                        <option value="R2">2차 검수 반려</option>
-                                        <option value="R3">3차 검수 반려</option>
-                                        <option value="J">1차 검수 취소</option>
-                                        <option value="K">2차 검수 취소</option>
-                                        <option value="L">3차 검수 취소</option>
-                                        <option value="R4">작업취소</option>
+                                        <option value="{{dbinfostatus.status_work_deagi}}">작업대기</option>
+                                        <option value="{{dbinfostatus.status_work_run}}">작업진행</option>
+                                        <option value="{{dbinfostatus.status_1cha_inspect_deagi}}">1차 검수 대기</option>
+                                        <option value="{{dbinfostatus.status_1cha_inspect_run}}">1차 검수 진행</option>
+                                        <option value="{{dbinfostatus.status_2cha_inspect_deagi}}">2차 검수 대기</option>
+                                        <option value="{{dbinfostatus.status_2cha_inspect_run}}">2차 검수 진행</option>
+                                        <option value="{{dbinfostatus.status_3cha_inspect_deagi}}">3차 검수 대기</option>
+                                        <option value="{{dbinfostatus.status_3cha_inspect_run}}">3차 검수 진행</option>
+                                        <option value="{{dbinfostatus.status_complet}}">작업완료</option>
+                                        <option value="{{dbinfostatus.status_1cha_companion_return}}">1차 검수 반려</option>
+                                        <option value="{{dbinfostatus.status_2cha_companion_return}}">2차 검수 반려</option>
+                                        <option value="{{dbinfostatus.status_3cha_companion_return}}">3차 검수 반려</option>
+                                        <option value="{{dbinfostatus.status_1cha_companion_cansel}}">1차 검수 취소</option>
+                                        <option value="{{dbinfostatus.status_2cha_companion_cansel}}">2차 검수 취소</option>
+                                        <option value="{{dbinfostatus.status_3cha_companion_cansel}}">3차 검수 취소</option>
+                                        <option value="{{dbinfostatus.status_job_cansel}}">작업취소</option>
                                     </select>
                                 </div>
                                 <div class="condition">
@@ -209,13 +232,13 @@
                                 <td>{{item.work_id}}</td>
                                 <td><button type="button" data-search="product">{{item.str_type}}</button></td>
 
-                                {% if item.work_status == "B" or item.work_status == "R1"  %}
+                                {% if item.work_status == dbinfostatus.status_work_run or item.work_status == dbinfostatus.status_1cha_companion_return %}
                                 <td>{{item.worker_name1}}</td>
-                                {% elif item.work_status == "D" or item.work_status == "R2" %}
+                                {% elif item.work_status == dbinfostatus.status_1cha_inspect_run or item.work_status == dbinfostatus.status_2cha_companion_return %}
                                 <td>{{item.worker_name2}}</td>
-                                {% elif item.work_status == "F" or item.work_status == "R3" %}
+                                {% elif item.work_status == dbinfostatus.status_2cha_inspect_run or item.work_status == dbinfostatus.status_3cha_companion_return %}
                                 <td>{{item.worker_name3}}</td>
-                                {% elif item.work_status == "H" or item.work_status == "R4" %}
+                                {% elif item.work_status == dbinfostatus.status_3cha_inspect_run or item.work_status == dbinfostatus.status_job_cansel %}
                                 <td>{{item.worker_name4}}</td>
                                 {% else %}
                                 <td>-</td>
@@ -242,7 +265,8 @@
                                             }())
                                     </script>
                                 </td>
-                               {% if item.work_status == "A" or item.work_status == "J" or item.work_status == "K" or item.work_status == "R4" or item.work_status == "L" or item.work_status == "I"%}
+
+                              {% if item.work_status in workviewConfirm %}
                                 <td></td>
                                {%  else %}
                                 <td><button data-work="admin_work_view">작업보기</button></td>
@@ -288,6 +312,9 @@
                                 <th></th>
                             </tr>
                             </thead>
+
+
+
 
 
 
@@ -530,7 +557,6 @@
 
 
     </script>
-
 
 
 </body>

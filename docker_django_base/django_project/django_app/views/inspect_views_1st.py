@@ -226,11 +226,12 @@ def task_complete_module(request, task_num, work_type):
     if request.method == "POST" :
         dict = json.loads(request.body)
 
-        print('==========')
         if work_type == "interface":
-            InspectAdapter_1st().inspect_complete_check(request, task_num, work_type)
+            dict_check = dict['check']
+            print('=====dict_check=====', dict_check)
+            InspectAdapter_1st().inspect_complete_check(request, task_num, work_type, dict_check)
             if dict['check'] == '반려':
-                InspectAdapter_1st().update_status(task_num, 'R1')
+                InspectAdapter_1st().update_status(task_num, dbinfo.status['status_1cha_companion_return'])
 
         elif work_type == "normal":
             InspectAdapter_1st().inspect_complete_check_abnormal(request,task_num)

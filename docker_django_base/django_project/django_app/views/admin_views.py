@@ -82,13 +82,32 @@ class adminIndex(TemplateView):
             print("user_list------------------------------------------------------------------------")
             self.res_dic['user_list'] = user_list
             #     print("---------------------------------------------------------------------------------")
+            if whatGroup['group_id'] != '-': # 그룹별
+                groupData = adminAdapter().getGroupInfo(request, whatGroup['group_id'])
+                self.res_dic = groupData
+                # 여기
+                print("geteif11111111111111", dbinfo.status)
 
+<<<<<<< .mine
             res_dic = adminAdapter().getProjectProgress(request)
             print("res_dic--------------------------------------------------------------------------")
             print(res_dic)
             self.res_dic.update(res_dic)
             print("---------------------------------------------------------------------------------")
+||||||| .r259
+            data = adminAdapter().getGroupInfo(request, whatGroup['group_id'])
+            res_dic = adminAdapter().getProjectProgress(request)
+            self.res_dic.update(res_dic)
+            self.res_dic['user_list'] = data['user_list']
+            self.res_dic['total_worklist'] = data['total_worklist']
+            self.res_dic['all_task_list'] = data['all_task_list']
+=======
+            else: # '-' 전체 정보
+                user_list = adminAdapter().getUserList(request)
+                all_task_list = adminAdapter().get_current_process(request)
+>>>>>>> .r284
 
+<<<<<<< .mine
             all_task_list = adminAdapter().get_current_process(request)
             print("all_task_list--------------------------------------------------------------------")
             # check_task_list = adminAdapter().get_task_check_data(request)
@@ -103,8 +122,34 @@ class adminIndex(TemplateView):
             print("self.res_dic!!!!!!!!-----------------------------------------------------------------------")
             # print(self.res_dic)
 
-            return render(request, self.template_name, self.res_dic)
+||||||| .r259
+=======
+                self.res_dic['user_list'] = user_list
+                self.res_dic['all_task_list'] = all_task_list
+                self.res_dic["gogo"] = dbinfo.status
+                print("getelse11111111111111", dbinfo.status)
 
+
+            res_dic = adminAdapter().getProjectProgress(request) #작업 현황(?)
+            self.res_dic.update(res_dic) #업데이트로 딕셔너리 병합
+            self.res_dic["dbinfostatus"] = dbinfo.status
+            scores = dbinfo.status
+            workviewList2 = ['status_work_deagi', 'status_1cha_companion_cansel','status_2cha_companion_cansel','status_job_cansel'
+                             ,'status_3cha_companion_cansel','status_complet']
+            scores.values()
+            workviewOk = []
+            for i in workviewList2:
+                if i in scores:
+                    value = scores[i]
+                    workviewOk.append(value)
+            # workviewOk = {name:score for name, score in scores.items() if name in workviewList2}
+            print("workviewOk!!!!!!!!!!!", type(workviewOk))
+
+            self.res_dic['workviewConfirm'] =workviewOk
+            # 로그인 여기!!!!!서 찍힌다
+            print("get11111111111111", dbinfo.status)
+>>>>>>> .r284
+            return render(request, self.template_name, self.res_dic)
             # elif whatGroup = 'tbit':
             #     pass
             #
@@ -205,13 +250,17 @@ class adminIndex(TemplateView):
                 # self.res_dic['tatal_rate'] = tatal_rate
 
                 self.res_dic['user_list'] = user_list
-
+                self.res_dic["dbinfo.status"] = dbinfo.status
+                print("post11111111111111", dbinfo.status)
                 try:
                     all_task_list = adminAdapter().get_current_process(request, data_dic=data_dic)
                     check_task_list = adminAdapter().get_task_check_data(request)
 
                     self.res_dic['all_task_list'] = all_task_list
                     self.res_dic['check_task_list'] = check_task_list
+                    self.res_dic['statusDic'] = dbinfo.status
+                    print("posttry11111111111111", dbinfo.status)
+
 
                     return render(request, self.template_name, self.res_dic)
                 except:
@@ -555,7 +604,7 @@ def insert_work(request):
                     data_dic = {
                         'work_type': 'interface' if 'action_video' in key else 'normal',
                         'video_path': data_dic["video_path"],
-                        'work_status': 'A',
+                        'work_status':dbinfo.status['status_work_deagi'],
                         'reg_id': 'admin',
                         'reg_date': now,
                         'group_id': group_id

@@ -7,25 +7,28 @@ from django.contrib.auth.hashers import check_password
 from ..models import *
 from datetime import datetime
 
-
 from PIL import Image
 from .sqlMethod import *
 
+<<<<<<< .mine
 import json,bson,os
 from db_info import dbinfo
+||||||| .r259
+import json,bson,os
+
+=======
+import json, bson, os
+from db_info import dbinfo
+>>>>>>> .r284
 from .status_dic import porocess_status, record_status, deny_status, pay_status
+
 
 class InspectAdapter_2nd:
 
-
-
-
-
     def __init__(self):
-        
+
         self.res_dic = {}
 
-    
     ## 검수 페이지에서 신청 가능한 검수 목록 데이터를 가져오는 로직
     def get_inspect_list(self, request):
 
@@ -40,8 +43,19 @@ class InspectAdapter_2nd:
                 "(select code_nm  from django_app_code_mst where code_id = work_status)  work_status_nm",
                 "(select code_nm  from django_app_code_mst where code_id = work_type) work_type_nm",
             ]
+<<<<<<< .mine
             option = "and (select dap.group_id from django_app_profile dap where dap.account_id = '"+str(request.user)+"') = group_id order by work_id limit 10"
             inspect_list = sql_query.select_workList(table_name='django_app_worklist', data_dic={'work_status': dbinfo.status['status_2cha_inspect_deagi']}, status_list=None, column_list= column_list, option=option)
+||||||| .r259
+            option = "and (select dap.group_id from django_app_profile dap where dap.account_id = '"+str(request.user)+"') = group_id order by work_id limit 10"
+            inspect_list = sql_query.select_workList(table_name='django_app_worklist', data_dic={'work_status': 'E'}, status_list=None, column_list= column_list, option=option)
+=======
+            option = "and (select dap.group_id from django_app_profile dap where dap.account_id = '" + str(
+                request.user) + "') = group_id order by work_id limit 10"
+            inspect_list = sql_query.select_workList(table_name='django_app_worklist', data_dic={
+                'work_status': dbinfo.status['status_2cha_inspect_deagi']}, status_list=None, column_list=column_list,
+                                                     option=option)
+>>>>>>> .r284
             # filter_inspect_list = []
 
             # ## 작업 승인이 된 경우에만 검수 리스트에 나타나야하므로 조건에 해당하는 데이터만 list에 추가
@@ -59,7 +73,6 @@ class InspectAdapter_2nd:
             raise
 
         return zip(range(1, len(inspect_list) + 1), inspect_list)
-
 
     def get_task_info(self, request, user_name, task_num):
 
@@ -127,8 +140,6 @@ class InspectAdapter_2nd:
     #
     #             inspect_history_set.save()
 
-            
-            
     ##  나의 작업 페이지에서 검수 리스트 데이터를 가져옴
     def get_my_inspect_list(self, request):
 
@@ -143,10 +154,17 @@ class InspectAdapter_2nd:
                            "(select dacm.code_nm from django_app_code_mst dacm where dacm.code_id = daw.work_status ) str_status, "
                            "(select dacm.code_nm from django_app_code_mst dacm where dacm.code_id = daw.work_type) str_type "}
             dic = {
+<<<<<<< .mine
                 "daw.work_status" : dbinfo.status['status_2cha_inspect_run'],
+||||||| .r259
+                "daw.work_status" : "F",
+=======
+                "daw.work_status": dbinfo.status['status_2cha_inspect_run'],
+>>>>>>> .r284
                 "daw.inspect_id2": str(get_user_name)
             }
-            task_list = sql_query.select_workList(table_name="django_app_worklist daw", data_dic=dic, status_list=None, column_list=join_column, option=None)
+            task_list = sql_query.select_workList(table_name="django_app_worklist daw", data_dic=dic, status_list=None,
+                                                  column_list=join_column, option=None)
             sql_query.close()
             print("Inspect List : check : ", task_list)
 
@@ -156,7 +174,7 @@ class InspectAdapter_2nd:
 
     ## 검수 신청 시 로직 구동
     def change_db_info(self, request, user_name, task_num):
-        
+
         # work_record_inspec = WorkRecord.objects.filter(task_num = task_num, work_category = record_status['2차 검수 신청'])
         # check_query = WorkRecord.objects.filter(task_num = task_num, work_category = record_status['1차 검수 신청'])
 
@@ -164,10 +182,19 @@ class InspectAdapter_2nd:
         try:
             sql_query = sqlMethod()
             check_inspect_dic = {
+<<<<<<< .mine
                 "work_status" : dbinfo.status['status_2cha_inspect_run'],
                 "inspect_id2" : str(request.user)
+||||||| .r259
+                "work_status" : "F",
+                "inspect_id2" : str(request.user)
+=======
+                "work_status": dbinfo.status['status_2cha_inspect_run'],
+                "inspect_id2": str(request.user)
+>>>>>>> .r284
             }
-            check_inspect = sql_query.select_workList(table_name="django_app_worklist", data_dic=check_inspect_dic, status_list=None)
+            check_inspect = sql_query.select_workList(table_name="django_app_worklist", data_dic=check_inspect_dic,
+                                                      status_list=None)
         except:
             raise
         ## 똑같은 같은 검수 작업이 2개 이상 신청될 수 없도록 하는 로직
@@ -180,8 +207,9 @@ class InspectAdapter_2nd:
 
         # inspect_query = WorkList.objects.get(task_num = task_num)
         try:
-            inspect_dic={ "work_id" : task_num}
-            inspect_query = sql_query.select_workList(table_name="django_app_worklist", data_dic=inspect_dic, status_list=None)
+            inspect_dic = {"work_id": task_num}
+            inspect_query = sql_query.select_workList(table_name="django_app_worklist", data_dic=inspect_dic,
+                                                      status_list=None)
 
             # inspector_name = str(inspect_query.inspect_user_id_2)
             inspector_name = str(inspect_query[0].get("inspect_id2"))
@@ -201,13 +229,12 @@ class InspectAdapter_2nd:
             raise
 
         if not tasker_name == request.user or \
-            not inspector_name_1st == request.user or \
-            not inspector_name or inspector_name == 'None':
-
+                not inspector_name_1st == request.user or \
+                not inspector_name or inspector_name == 'None':
 
             print("검수 중복 체크 완료, 이름 중복 없음")
             print("Inspect DB Query INSERT EVENT")
-            
+
             # work_record = WorkRecord()
             #
             # # get_task_info = query_set.filter(task_num = task_num)
@@ -229,20 +256,42 @@ class InspectAdapter_2nd:
             try:
                 now = datetime.now().strftime("%Y%m%d %H%M%S")
                 set_dic = {
+<<<<<<< .mine
                     "work_status" : dbinfo.status['status_2cha_inspect_run'],
                     "inspect_id2" : str(request.user),
+||||||| .r259
+                    "work_status" : "F",
+                    "inspect_id2" : str(request.user),
+=======
+                    "work_status": dbinfo.status['status_2cha_inspect_run'],
+                    "inspect_id2": str(request.user),
+>>>>>>> .r284
                 }
                 update_dic = {
-                    "work_id" : task_num
+                    "work_id": task_num
                 }
                 sql_query.update_status(table_name="django_app_worklist", data_dic=set_dic, con_dic=update_dic)
                 print("update success!")
                 insert_dic = {
+<<<<<<< .mine
                     "work_id" : task_num,
                     "work_status" : dbinfo.status['status_2cha_inspect_run'],
                     "reg_id" : str(request.user),
                     "reg_date" : now,
                     "group_id" : inspect_group_id
+||||||| .r259
+                    "work_id" : task_num,
+                    "work_status" : 'F',
+                    "reg_id" : str(request.user),
+                    "reg_date" : now,
+                    "group_id" : inspect_group_id
+=======
+                    "work_id": task_num,
+                    "work_status": dbinfo.status['status_2cha_inspect_run'],
+                    "reg_id": str(request.user),
+                    "reg_date": now,
+                    "group_id": inspect_group_id
+>>>>>>> .r284
                 }
                 sql_query.insert_workList(table_name="django_app_workhistory", data_dic=insert_dic)
                 print("insert success!")
@@ -251,9 +300,9 @@ class InspectAdapter_2nd:
             except:
                 raise
 
-        else :
+        else:
             ## 잘못된 접근인 경우
-            if inspector_name != request.user :
+            if inspector_name != request.user:
                 sql_query.close()
                 return 404
             sql_query.close()
@@ -271,7 +320,7 @@ class InspectAdapter_2nd:
         #     work_list_info.inspect_start_date_2 = datetime.now()
 
         #     task_unique_number = work_list_info.task_num
-            
+
         #     work_record.worklist_task_num_id = task_unique_number
         #     work_record.task_num = task_num
         #     work_record.work_category = record_status['2차 검수 신청']
@@ -282,7 +331,7 @@ class InspectAdapter_2nd:
         #     work_record.save()
 
         #     return True
-    
+
     ## 유저 정보에 해당하는 검수 리스트 데이터를 가져오는 로직
     def get_inspect_info(self, request, user_name, task_num):
 
@@ -292,29 +341,50 @@ class InspectAdapter_2nd:
         try:
             sql_query = sqlMethod()
             data_dic = {
+<<<<<<< .mine
                 "work_status" : dbinfo.status['status_2cha_inspect_run'],
                 "inspect_id2" : str(user_name),
                 "work_id" : task_num
+||||||| .r259
+                "work_status" : "F",
+                "inspect_id2" : str(user_name),
+                "work_id" : task_num
+=======
+                "work_status": dbinfo.status['status_2cha_inspect_run'],
+                "inspect_id2": str(user_name),
+                "work_id": task_num
+>>>>>>> .r284
             }
-            work_list_info = sql_query.select_workList(table_name="django_app_worklist", data_dic=data_dic, status_list=None)
+            work_list_info = sql_query.select_workList(table_name="django_app_worklist", data_dic=data_dic,
+                                                       status_list=None)
             sql_query.close()
             return work_list_info[0]
         except:
             raise
 
     ## 재 작업 시 로직 구동
-    def rework_logic(self, request, user_name, task_num) : 
+    def rework_logic(self, request, user_name, task_num):
 
-        try : 
-            
+        try:
+
             print("Inspect rework_logic")
-            
+
             # query = WorkRecord.objects.filter(task_num = task_num, work_category= record_status['2차 검수 신청'], reg_id = user_name)
             sql_query = sqlMethod()
             data_dic = {
+<<<<<<< .mine
                 "work_id" : task_num,
                 "work_status" : dbinfo.status['status_2cha_inspect_run'],
                 "reg_id" : user_name
+||||||| .r259
+                "work_id" : task_num,
+                "work_status" : 'F',
+                "reg_id" : user_name
+=======
+                "work_id": task_num,
+                "work_status": dbinfo.status['status_2cha_inspect_run'],
+                "reg_id": user_name
+>>>>>>> .r284
             }
             query = sql_query.select_workList(table_name="django_app_workhistory", data_dic=data_dic, status_list=None)
 
@@ -327,7 +397,7 @@ class InspectAdapter_2nd:
                 sql_query.close()
                 return 4
 
-            else :
+            else:
                 print("Data Not detected")
                 sql_query.close()
                 return 5
@@ -345,18 +415,21 @@ class InspectAdapter_2nd:
         user_name = request.user
 
         try:
-            query_set = WorkList.objects.get(inspect_status_2 = porocess_status['2차 검수 진행'], inspect_user_id_2 = user_name, task_num = task_num)
+            query_set = WorkList.objects.get(inspect_status_2=porocess_status['2차 검수 진행'], inspect_user_id_2=user_name,
+                                             task_num=task_num)
 
             worklist_key = query_set.task_num
 
-            query_set_check = WorkRecord.objects.filter(work_category = record_status['2차 검수 신청'], reg_id = user_name, worklist_task_num_id = worklist_key)
+            query_set_check = WorkRecord.objects.filter(work_category=record_status['2차 검수 신청'], reg_id=user_name,
+                                                        worklist_task_num_id=worklist_key)
         except:
             raise
 
         if query_set_check.exists():
 
             try:
-                query_set_add = WorkRecord.objects.get(work_category = record_status['2차 검수 신청'], reg_id = user_name, worklist_task_num_id = worklist_key)
+                query_set_add = WorkRecord.objects.get(work_category=record_status['2차 검수 신청'], reg_id=user_name,
+                                                       worklist_task_num_id=worklist_key)
 
                 query_set_add.work_category = record_status['2차 검수 취소']
                 query_set_add.reg_date = datetime.now()
@@ -382,8 +455,6 @@ class InspectAdapter_2nd:
 
             return False
 
-
-        
     ## 검수 작업 취소 기능 로직
     def inspect_cancel(self, request, task_num):
 
@@ -425,7 +496,13 @@ class InspectAdapter_2nd:
 
             sql_query = sqlMethod()
 
+<<<<<<< .mine
             update_val = {"work_status": dbinfo.status['status_2cha_inspect_deagi'], "inspect_id2" : ""}
+||||||| .r259
+            update_val = {"work_status": "E", "inspect_id2" : ""}
+=======
+            update_val = {"work_status": dbinfo.status['status_2cha_inspect_deagi'], "inspect_id2": ""}
+>>>>>>> .r284
             update_con = {"work_id": str(task_num)}
 
             sql_query.update_status(table_name="django_app_worklist", data_dic=update_val, con_dic=update_con)
@@ -440,7 +517,6 @@ class InspectAdapter_2nd:
             sql_query.delete(table_name="django_app_workhistory", data_dic=del_val, option=None)
             print("delete 성공 ")
 
-
             sql_query.close()
             return True
 
@@ -449,18 +525,14 @@ class InspectAdapter_2nd:
             sql_query.close()
             return False
 
-
-
-
-
     ## 같은 작업자가 작업과 검수를 동시에 할 수 없도록 처리하는 로직
-    def get_compare_result(self, request, task_num) :
+    def get_compare_result(self, request, task_num):
 
         try:
             # get_info = WorkList.objects.get(task_num = task_num)
             sql_query = sqlMethod()
-            data_dic={"work_id" : task_num}
-            get_info =sql_query.select_workList(table_name="django_app_worklist", data_dic=data_dic, status_list=None)
+            data_dic = {"work_id": task_num}
+            get_info = sql_query.select_workList(table_name="django_app_worklist", data_dic=data_dic, status_list=None)
 
             # tasker_id = get_info.task_user_id
             # inspector_1st_id = get_info.inspect_user_id
@@ -474,19 +546,13 @@ class InspectAdapter_2nd:
         except:
             raise
 
-        if str(worker_id) == str(user_id) or  str(inspect_id1) == str(user_id):
+        if str(worker_id) == str(user_id) or str(inspect_id1) == str(user_id):
             sql_query.close()
             return False
 
-        else :
+        else:
             sql_query.close()
             return True
-
-
-
-
-
-    
 
     ## 작업 완료 시 JSON 정보와 저장 정보를 마무리 하는 기능
     def inspect_complete_check(self, request, task_num):
@@ -505,9 +571,17 @@ class InspectAdapter_2nd:
 
             # inspect_history = WorkRecord.objects.get(inspect_status = "B", task_num = task_num)
 
-            #query_set = WorkList.objects.get(inspect_status_2 = porocess_status['2차 검수 진행'], inspect_user_id = request.user, task_num = task_num)
+            # query_set = WorkList.objects.get(inspect_status_2 = porocess_status['2차 검수 진행'], inspect_user_id = request.user, task_num = task_num)
             a = sqlMethod()
+<<<<<<< .mine
             query_set = a.update_status(table_name='django_app_worklist', data_dic={'work_status': dbinfo.status['status_3cha_inspect_deagi']}, con_dic={'work_id': str(task_num)})
+||||||| .r259
+            query_set = a.update_status(table_name='django_app_worklist', data_dic={'work_status': 'G'}, con_dic={'work_id': str(task_num)})
+=======
+            query_set = a.update_status(table_name='django_app_worklist',
+                                        data_dic={'work_status': dbinfo.status['status_3cha_inspect_deagi']},
+                                        con_dic={'work_id': str(task_num)})
+>>>>>>> .r284
 
             print(query_set)
 
@@ -529,18 +603,27 @@ class InspectAdapter_2nd:
             # query_set.inspect_end_date = datetime.now()
             # query_set.inspect_status_3 = porocess_status['3차 검수 대기']
 
-            #task_number = query_set.task_num
+            # task_number = query_set.task_num
 
             # image_count = query_set.image_count
 
             # query_set.save()
 
             ## WorkRecord Table Info Change
-            #get_history_key = WorkRecord.objects.filter(worklist_task_num_id = task_number, work_category = record_status['2차 검수 신청'], task_num = task_num).order_by('reg_date').last()
-            #history_key = get_history_key.id
+            # get_history_key = WorkRecord.objects.filter(worklist_task_num_id = task_number, work_category = record_status['2차 검수 신청'], task_num = task_num).order_by('reg_date').last()
+            # history_key = get_history_key.id
 
+<<<<<<< .mine
             #query_set_2 = WorkRecord()
             dic = {'work_id': str(task_num), 'work_status': dbinfo.status['status_3cha_inspect_deagi'], 'reg_id': str(user_name), 'reg_date': str(datetime.now())}
+||||||| .r259
+            #query_set_2 = WorkRecord()
+            dic = {'work_id': str(task_num), 'work_status': 'G', 'reg_id': str(user_name), 'reg_date': str(datetime.now())}
+=======
+            # query_set_2 = WorkRecord()
+            dic = {'work_id': str(task_num), 'work_status': dbinfo.status['status_3cha_inspect_deagi'],
+                   'reg_id': str(user_name), 'reg_date': str(datetime.now())}
+>>>>>>> .r284
             query_set_2 = a.insert_workList(table_name='django_app_workhistory', data_dic=dic)
             # query_set_2.worklist_task_num_id = task_number
             # query_set_2.work_category = record_status['2차 검수 완료']
@@ -576,7 +659,7 @@ class InspectAdapter_2nd:
         # print('length : ', get_json_data.get('length'))
         # print('type : ', get_json_data.get('type'))
         #
-           
+
 
 
 
