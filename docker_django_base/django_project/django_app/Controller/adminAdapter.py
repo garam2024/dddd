@@ -342,6 +342,7 @@ class adminAdapter():
 
             elif data_dic['groupId'] != '' and data_dic['groupId'] != 'all':
                 option = option + "and group_id = '" + data_dic['groupId']+"'"
+
             elif data_dic['groupId'] == 'all':
                 option = option + "and group_id = 'tbit' or group_id = 'gjac' or group_id = 'dtw'"
 

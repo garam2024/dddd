@@ -142,3 +142,26 @@ class UserAdapter:
 
             return is_superuser
             raise
+
+    def get_group(self, request):
+
+        try:
+            sql_query = sqlMethod()
+            column_list = {"group_id"}
+            profile_dic = {
+                "account_id": str(request.user)
+            }
+            profile_inspector_check = sql_query.select_workList(table_name="django_app_profile", data_dic=profile_dic,
+                                                                status_list=None, column_list=column_list)
+            sql_query.close()
+
+            print(type(profile_inspector_check))
+
+            return profile_inspector_check[0]
+
+        except:
+
+            print("group_id 가져오기 실패")
+
+            return False
+            raise
