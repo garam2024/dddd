@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mapper namespace="53project">
+    <select id="selectWorklist">
+        select * from django_app_worklist where 1=1
+        and work_id = #{work_id}
+        [if test="work_id !=''"]
+            and 1=1
+        [/if]
+    </select>
+
+    <select id="selectKeyid">
+        select currval('django_app_worklist_task_num_seq') as workLST
+    </select>
+
+    <insert id="workinsert">
+        insert into django_app_tasklist (
+            task_id,
+            associated_video_path,
+            task_data,
+            work_id,
+            end_time,
+            start_time,
+            reg_id,
+            reg_date,
+            reject_status,
+            group_id
+        )values(
+            #{task_id},
+            #{associated_video_path},
+            #{task_data},
+            #{work_id},
+            #{end_time},
+            #{start_time},
+            #{reg_id},
+            now(),
+            #{reject_status},
+            #{group_id}
+        )
+    </insert>
+</mapper>
+

@@ -1,0 +1,262 @@
+@charset "utf-8";
+
+.bold{
+    font-weight: 600;
+}
+
+.admin-page{
+    margin: 44px auto;
+}
+
+.admin-page > section{
+
+}
+
+.admin-page h3{
+    margin-bottom: 16px;
+}
+
+.admin-page .pagination{
+    display: flex;
+    justify-content: center;
+    color: #252c41;
+}
+
+.admin-page .work-progress{
+    margin-bottom: 32px;
+}
+
+.admin-page section{
+
+}
+
+.admin-page nav{
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+}
+
+.admin-page .table{
+
+}
+
+.button{
+    display: block;
+    margin-bottom: 16px;
+    padding: 4px;
+    border: none;
+}
+
+input.button{
+    width: 100%;
+    text-align: left;
+    text-decoration: none;
+}
+
+.admin-page .page-link{
+    color: #252c41
+}
+
+.admin-page h3{
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.admin-page table th,
+.admin-page table{
+    text-align: center;
+}
+
+.admin-page tbody tr td{
+
+}
+
+.admin-page tbody tr td:hover{
+    cursor: pointer;
+}
+
+.admin-page .selected-product ul,
+.admin-page .work-progress ul{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0;
+}
+
+.admin-page .selected-workman ul{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0;
+}
+
+.admin-page .work-progress ul li,
+.admin-page .selected-product ul li,
+.admin-page .selected-workman ul li{
+    width: 100%;
+    padding: 8px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.admin-page .selected-product ul li:nth-child(odd),
+.admin-page .selected-workman ul li:nth-child(odd),
+.admin-page .work-progress ul li:nth-child(odd){
+    background-color: #f9f9f9;
+}
+
+.admin-page .selected-product ul li:nth-child(n + 2),
+.admin-page .selected-workman ul li:nth-child(n + 2),
+.admin-page .work-progress ul li:nth-child(n + 2){
+    border-left: none;
+}
+
+.admin-page .selected-product ul:nth-child(n + 2) li,
+.admin-page .selected-workman ul:nth-child(n + 2) li,
+.admin-page .work-progress ul:nth-child(n + 2) li{
+    border-top: none;
+}
+
+.admin-page .selected-product,
+.admin-page .selected-workman{
+    display: none;
+    margin-bottom: 16px;
+}
+
+.admin-page .selected-product.active,
+.admin-page .selected-workman.active{
+    display: block;
+}
+
+.admin-page table thead tr th{
+    cursor: pointer;
+}
+
+.admin-page button{
+    padding: 4px;
+    text-align: left;
+}
+
+.admin-page .tab{
+    display: none;
+}
+
+.admin-page .tab.active{
+    display: block;
+}
+
+.admin-page .function{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.button-first{
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.button-first:hover{
+    background-color: #ddd;
+}
+/* 
+.tab-table{
+  
+} */
+
+.admin-table{
+  overflow:auto !important;
+  height:42vh !important;
+}
+
+.modal-background{
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+}
+
+.modal-inner{
+    width: 300px;
+    padding: 8px 16px;
+    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.5);
+    background-color: white;
+}
+
+.modal-background.active{
+    display: flex;
+}
+
+.modal-background h4{
+    margin-bottom: 8px;
+}
+
+.modal-background textarea{
+    width: 100%;
+    padding: 8px;
+}
+
+.button-form{
+    display: flex;
+    display: -ms-flexbox;
+    justify-content: flex-end;
+}
+
+.button-form button:first-child{
+    margin-right: 8px;
+}
+
+.style-flex{
+    display: flex;
+    justify-content: space-between;
+}
+
+.style-flex > div label{
+    margin: 0 4px;
+}
+
+.style-flex > div label input{
+    margin-right: 2px;
+}
+
+.searchCondition {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.searchCondition button{
+    font-size: 14px;
+}
+
+.searchCondition .search{
+    display: grid;
+    grid-template-columns: 2fr 2fr 2fr 2fr 3fr;
+}
+
+.condition{
+    margin-right: 8px;
+}
+
+.condition .date{
+    display: flex;
+}
+
+.condition .date input{
+   margin-left: 4px;
+}
+
+.search{
+    width: 90%;
+    display: inline-block;
+}
+
+.searchSubmit{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

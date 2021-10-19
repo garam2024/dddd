@@ -1,0 +1,111 @@
+{% extends 'django_app/base.html' %}
+{% load static %}
+{% block contents %}
+<link rel="icon" href="{% static 'django_app/img/logo/gjac_favicon.ico' %}">
+<link rel="stylesheet" href="{% static 'django_app/css/color.css' %}">
+
+
+    
+    <div class="workMain">
+      <div style="padding-top:42px;">
+      <div class="workMain_2">
+        <div class="sero">
+          <div class="tableMargin">
+        <div class="flex_row">
+          <div><img src="{% static 'django_app/img/menu/arrow.svg' %}"></div>
+          <div class="labellingWork">나의 작업 기록</div>
+        </div>
+        <div class="tableOver">
+        <table class="worktable">
+            <thead>
+                <tr>
+                    <th style="width:10%;">구분</th>
+                    <th style="width:15%;">작업 종류</th>
+                    <th style="width:15%;">작업 상태</th>
+                    <th style="width:25%;">등록 날짜</th>
+                    <th style="width:25%;">반려 메시지</th>
+                    <th style="width:25%;">재작업</th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                 {% for task in task_record_list %}
+                <tr>
+                     <td>{{task.work_id}}</td>
+                     <td>{{task.work_type_nm}}</td>
+                     <td>{{task.work_status_nm}}</td>
+                     <td>{{task.reg_date|date:"Y-m-d" }}[{{ task.reg_date|time:"H:i" }}]</td>
+                     <td><div class="mytask-memo">{{task.memo}}</div></td>
+
+                    {% if task.work_status != "I" %}
+                        <td>
+
+                            <form action="{% url 're_work_process' task.work_id task.work_type %}" method="post">
+                            {% csrf_token %}
+                                <button type="button" class="choice" onclick='formMessage(event)'>재작업</button>
+                            </form>
+                         </td>
+                    {% else %}
+                        <td></td>
+
+                    {% endif %}
+
+                    {% empty %}
+                     <tr>
+                       <td colspan="6">
+                         작업 기록이 없습니다.
+                       </td>
+                     </tr>
+                </tr>
+                {% endfor %}
+
+               
+            </tbody>
+        </table>
+      </div>
+      </div>
+    </div>
+    <div class="flex_row">
+      <div><img src="{% static 'django_app/img/menu/arrow.svg' %}"></div>
+      <div class="labellingWork">나의 검수 기록</div>
+    </div>
+    <div class="tableOver">
+      <table class="worktable">
+          <thead>
+                <tr>
+                    <th style="width:10%;">구분</th>
+                    <th style="width:15%;">작업 종류</th>
+                    <th style="width:15%;">최종 작업 상태</th>
+                    <th style="width:15%;">나의 작업</th>
+                    <th style="width:25%;">등록 날짜</th>
+                </tr>
+          </thead>
+          
+          <tbody>
+
+                {% for inspect in inspect_record_list %}
+                <tr>
+                     <td>{{inspect.work_id}}</td>
+                     <td>{{inspect.work_type_nm}}</td>
+                     <td>{{inspect.work_status_nm}}</td>
+                     <td>{{inspect.my_status}}</td>
+                     <td>{{inspect.my_regdate|date:"Y-m-d" }}[{{ inspect.my_regdate|time:"H:i" }}]</td>
+                     {% empty %}
+                     <tr>
+                       <td colspan="4">
+                         검수 기록이 없습니다.
+                       </td>
+                     </tr>
+                </tr>
+                {% endfor %}
+             
+          </tbody>
+      </table>
+    </div>
+    </div>
+  
+    </div>
+  </div>
+
+{% endblock %}
+<script src="{% static 'django_app/js/tool/button.js' %}"></script>

@@ -1,0 +1,63 @@
+{% extends 'django_app/base.html' %}
+{% load static %}
+
+{% block contents %}
+<link rel="icon" href="{% static 'django_app/img/logo/gjac_favicon.ico' %}">
+<link rel="stylesheet" href="{% static 'django_app/css/color.css' %}">
+
+
+    <div class="workMain">
+      <div class="titleMargin">
+
+      <div class="workMain_2">
+        <div class="flex_row">
+          <div><img src="{% static 'django_app/img/menu/arrow.svg' %}"></div>
+          <div class="labellingWork">라벨링 작업</div>
+        </div>
+        <div class="tableOver_1">
+          <table class="worktable">
+              <thead>
+                  <tr>
+                      <th>구분</th>
+                      <th>작업 종류</th>
+                      <th>작업 상태</th>
+                      <th hidden>작업 금액</th>
+                      <th>작업 신청</th>
+
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for num, work in work_list %}
+                    <tr>
+                    
+                    <td>{{work.work_id}}</td>
+                    <td>{{work.work_type_nm}}</td>
+                    <td>{{work.work_status_nm}}</td>
+                    <td>
+                        <form action="{% url 'work_process' work.work_id work.work_type %}" method="post">
+                            {% csrf_token %}
+                            <button type="button" class="choice" onclick='formMessage(event)'>작업 신청</button>
+                        </form>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="4">
+                      작업 목록이 없습니다.
+                    </td>
+                  </tr>
+                {% endfor %}
+
+        
+              </tbody>
+          </table>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+<script src="{% static 'django_app/js/tool/button.js' %}"></script>
+
+
