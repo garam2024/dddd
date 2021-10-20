@@ -1,0 +1,98 @@
+<!--
+    2021 10 20 상민 수정
+-->
+
+{% load static %}
+<script src="{%static 'django_app/car_interface/js/loadXml.js' %}?ver={% now "M-H-i"%}"></script>
+<script src="{%static 'django_app/car_interface/js/ctrlCanvas.js' %}?ver={% now "M-H-i"%}"></script>
+<script src="{%static 'django_app/car_interface/js/ctrlWavesurfer.js' %}?ver={% now "M-H-i"%}"></script>
+<script src="{%static 'django_app/car_interface/js/ctrlSetBtn.js' %}?ver={% now "M-H-i"%}"></script>
+<script src="{%static 'django_app/car_interface/js/ctrlLabelForm.js' %}?ver={% now "M-H-i"%}"></script>
+<script src="{%static 'django_app/car_interface/js/ctrlClip.js' %}?ver={% now "M-H-i"%}"></script>
+<script src="{%static 'django_app/car_interface/js/ctrlFrame.js' %}?ver={% now "M-H-i"%}"></script>
+<script src="{%static 'django_app/car_interface/js/ctrlHandpose.js' %}?ver={% now "M-H-i"%}"></script>
+<script src="{%static 'django_app/car_interface/js/resetInfo.js' %}?ver={% now "M-H-i"%}"></script>
+<script src="{%static 'django_app/car_interface/js/exportJson.js' %}?ver={% now "M-H-i"%}"></script>
+<script src="{%static 'django_app/car_interface/js/scWavesurfer.js' %}?ver={% now "M-H-i"%}"></script>
+<!-- 푸터 -->
+<footer class="container-fluid footer">
+    <div class="footer_container">
+        <p>광주인공지능센터</p>
+        <p>주소: 광주 동구 동계천로 150 / 문화전당역4번 출구에서 683m</p>
+        <p><span class="glyphicon glyphicon-earphone"></span> 062-223-1335</p>
+    </div>
+</footer>
+    <!-- fabric -->
+<script>
+    $.ajaxSetup({
+        headers: {
+            "X-CSRFToken": '{{csrf_token}}'
+        }
+    });
+
+  const final_complete_inspect1 = document.getElementById('final_complete_inspect1')
+  final_complete_inspect1.addEventListener('click', e => {
+    $.ajax({
+        url: "task_complete",
+        type: "POST",
+        data: JSON.stringify({
+          group: document.getElementById("groupId").value
+        },),
+        success: function(){
+        window.location.assign('/mywork')
+        },
+        error: function(){
+        // console.log('error')
+        }
+    })
+  })
+      const inspectSuccess = document.getElementById('inspectSuccess')
+  inspectSuccess.addEventListener('click', e => {
+
+    var check =  memoArray.length > 0? '반려':'통과'
+
+    $.ajax({
+        url: "task_complete",
+        type: "POST",
+        data: JSON.stringify({
+            group: document.getElementById("groupId").value,
+            memo: memoArray,
+            check: check
+        }),
+        success: function(){
+            window.location.assign('/mywork')
+        },
+        error: function(){
+        // console.log('error')
+        }
+    })
+
+  })
+</script>
+<!-- <script>
+$(document).ready(function() {
+    var file_path = document.getElementById('orgVideo').getAttribute('src');
+    var file_name = file_path.substring(file_path.lastIndexOf('/') + 1);
+
+    // $.ajax({
+    //     url : '../../file_download/' + file_name,
+    //     type : 'GET', // get post put delete
+    //     // data : {
+    //     //     video_name : file_name,
+    //     // },
+    //     success : function(data){
+    //         console.log('hhh');
+    //     }
+    //     });
+    let linkElement = document.createElmeent('a');
+    linkElement.setAttribute('href', '/media/django_app/action_video/' + file_name);
+    linkElement.setAttribute('download', file_name);
+    linkElement.click();
+});
+
+</script> -->
+<!-- <script src="{%static 'django_app/js/tool/submit.js' %}"></script>
+<script src=" {% static 'django_app/js/tool/fabric.min.js'%}"></script>
+
+<script src="{% static 'django_app/js/tool/bounding_util.js'%}"></script> -->
+<!-- <script src=" {% static 'django_app/js/tool/labeling.js'%}"></script> -->
