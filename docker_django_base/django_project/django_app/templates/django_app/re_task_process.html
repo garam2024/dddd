@@ -391,6 +391,12 @@
     </script>
 
     <script>
+        xmlDownload.addEventListener('click', e => {
+            document.getElementById("xmlLoad").disabled = false;
+        })
+    </script>
+
+    <script>
         modelLoad.addEventListener('click', e => {
             document.querySelector(".btn-save").disabled = false;
         })
@@ -435,9 +441,10 @@
             document.getElementById("modelReload").disabled = true;
             document.querySelector(".btn-success").disabled = true;
             document.querySelector(".btn-danger").disabled = true;
+
             //경진
             document.querySelector(".btn-save").disabled = true;
-   
+            document.getElementById("xmlLoad").disabled = true;
             alert("\"작업 순서\" : video 업로드 => 작업 시작")
         });
 
@@ -547,7 +554,7 @@
 
                 document.querySelector(".tool>div>button:nth-child(1)").disabled = false;
                  //경진
-                document.querySelector(".btn-success").disabled = false;
+                //document.querySelector(".btn-success").disabled = false;
                 document.getElementById("modelLoad").disabled = false;
                 document.getElementById("modelReload").disabled = false;
                 document.querySelector(".btn-danger").disabled = false;
@@ -812,7 +819,6 @@
 
       const final_complete = document.getElementById('final_complete')
       final_complete.addEventListener('click', e => {
-
         $.ajax({
             url: "task_complete",
             type: "POST",
@@ -820,9 +826,15 @@
               task_num : document.getElementById('tasknumber').value,
               group: document.getElementById("groupId").value
             },),
-            success: function(){
-                alert("작업 내용이 최종 제출되었습니다.");
-                window.location.assign('/mywork')
+            success: function(response){
+                if(response.message == 'notsuccess'){
+                    alert("작업 내용이 반려되었습니다.");
+                    window.location.assign('/mywork_record')
+                }
+                else{
+                    alert("작업 내용이 최종 제출되었습니다.");
+                    window.location.assign('/mywork')
+                }
             },
             error: function(){
                 // console.log('error')

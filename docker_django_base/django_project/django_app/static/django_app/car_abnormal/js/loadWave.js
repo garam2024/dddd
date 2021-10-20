@@ -1,10 +1,15 @@
 var dbinfo
-//pathname 에 따라 페이지 설정해주기
-
+var get_statusDic_url
+if(window.location.pathname == '/admin/index/adminview'){
+get_statusDic_url = '/admin/index/adminview/get_statusDic'
+}
+else{
+get_statusDic_url = '/get_statusDic'
+}
 
 $.ajax({
     type:'POST',
-    url : '/get_statusDic',
+    url : get_statusDic_url,
     async:false,
     success : function(data){
         dbinfo = data
@@ -14,6 +19,12 @@ $.ajax({
     alert('작업상태불러오기실패_새로고침을눌러주세요')
     },
     })
+
+console.log()
+//pathname 에 따라 페이지 설정해주기
+
+
+
 
 
 const inputFile = document.getElementById("file");
@@ -124,7 +135,7 @@ inputFile.addEventListener("change", function(){
                 }
     }
 
-
+var work_status = document.getElementById("work_status").value;
 
 
 

@@ -20,9 +20,19 @@ xmlFileLoad.addEventListener('click', e => {
         workedFrames = [];
         workedClips = [];
         $('#div_btn').innerHTML = '';
+        Delete_Xml();
         inputXmlFile.click();
     }
 })
+//경진 xml 지우기
+function Delete_Xml() {
+    $.ajax({
+           url: "xml_insert",
+           type: "POST",
+           success: function() {
+       }
+    });
+}
 
 inputXmlFile.addEventListener('change', getFile)
 

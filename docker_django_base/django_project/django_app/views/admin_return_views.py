@@ -156,7 +156,6 @@ def check_task(request):
     user_name = str(request.user)
 
     task_db_list = getTaskInfo().task_db_select(user_name, task_num)
-    print("!!!!!!!!!!!!!!!!!!!!!!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@######################################")
-    print(task_db_list)
+
 
     return HttpResponse(json.dumps(task_db_list), content_type="application/json")

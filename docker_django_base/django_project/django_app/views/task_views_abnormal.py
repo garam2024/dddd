@@ -221,7 +221,7 @@ class Re_Task_process(TemplateView):
         
         if staff_permission:
             if get_message == '4':
-                print("!!!!!!!!!!!!!!!!!4!!!!!!!!!!!!!!!!!!!!!!")
+
                 task_info_list = TaskInfoAdapter().get_task_info(request, user_name, task_num)
                 message_context = "Exists"
 

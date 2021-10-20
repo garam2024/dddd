@@ -20,7 +20,6 @@ urlpatterns = [
 
 
 
-
     # 로그인 페이지
     path('', base_views.Index.as_view(), name='index'),
 
@@ -95,11 +94,14 @@ urlpatterns = [
     # 작업 페이지 동작 기능 모듈 : 클립 삭제
     path('work_process/<str:task_num>/<str:work_type>/task_region_delete', task_views.task_region_delete, name='task_region_delete'),
 
+    # 재작업 페이지 xml Region 선택 기능
+    path('work_process/<str:task_num>/<str:work_type>/xml_insert', task_views.task_xml_insert, name='work_xml_delete'),
+
     # 작업 페이지 동작 기능 모듈 : 최종 제출
     path("work_process/<str:task_num>/<str:work_type>/task_complete", task_views.task_complete_module, name='task_complete'),
 
     # 작업 페이지 동작 기능 모듈 : 이전 버젼 잔재 모듈
-    path("work_process/<str:task_num>/<str:work_type>/check_api", task_views.check_api, name='check_api'),
+    path("work_process/<str:task_num>/<str:work_type>/check_task", task_views.check_task, name='check_api'),
     path("work_process/<str:task_num>/<str:work_type>/task_middle_cancel", task_views.task_middle_cancel_module, name='task_middle_cancel'),
     
 
@@ -117,6 +119,9 @@ urlpatterns = [
     # 작업 페이지 동작 기능 모듈 : 클립 삭제
     path('re_work_process/<str:task_num>/<str:work_type>/task_region_delete', task_views.task_region_delete, name='task_region_delete'),
 
+    # 재작업 페이지 xml Region 선택 기능
+    path('re_work_process/<str:task_num>/<str:work_type>/xml_insert', task_views.task_xml_insert, name='re_work_xml_delete'),
+
     # 작업 페이지 동작 기능 모듈 : 최종 제출
     path("re_work_process/<str:task_num>/<str:work_type>/task_complete", task_views.task_complete_module, name='task_complete'),
 
@@ -126,12 +131,13 @@ urlpatterns = [
     path("re_work_process/<str:task_num>/<str:work_type>/get_statusDic", base_views.get_statusDic, name = "get_statusDic"),
 
 
-
+    # garam 여기까지
 
 
     ## 1차 검수 페이지
     path('inspect_process_1st/<str:task_num>/<str:work_type>/', inspect_views_1st.Inspect_process.as_view(), name = 'inspect_process_1st'),
-
+    #작업 상태 검색 모듈
+    path('inspect_process_1st/<str:task_num>/<str:work_type>/get_statusDic', base_views.get_statusDic, name = 'get_statusDic'),
     # 1차 검수 페이지 동작 기능 모듈 : 클립 저장
     path("inspect_process_1st/<str:task_num>/<str:work_type>/task_api", inspect_views_1st.task_api, name = 'task_api'),
 
@@ -204,7 +210,7 @@ urlpatterns = [
     path("inspect_process_3rd/<str:task_num>/task_api", inspect_views_3rd.task_api, name = 'task_api_3rd'),
 
     # 3차 검수 페이지 동작 기능 모듈 : 최종 제출
-    path("inspect_process_3rd/<str:task_num>/<str:work_type>/task_complete", inspect_views_3rd.task_complete_module, name ='task_complete_3rd'),
+    path("inspect_process_3rd/<str:task_num>/<str:work_type>/final_complete_inspect2", inspect_views_3rd.task_complete_module, name ='task_complete_3rd'),
 
     # 3차 검수 페이지 동작 기능 모듈 : 이전 버젼 잔재 모듈
     path("inspect_process_3rd/<str:task_num>/check_api", inspect_views_3rd.check_api, name = 'check_api_3rd'),
@@ -221,7 +227,7 @@ urlpatterns = [
     path("re_inspect_process_3rd/<str:task_num>/task_api", inspect_views_3rd.task_api, name = 'task_api'),
 
     # 3차 재검수 페이지 동작 기능 모듈 : 최종 제출
-    path("re_inspect_process_3rd/<str:task_num>/<str:work_type>/task_complete", inspect_views_3rd.task_complete_module, name ='task_complete'),
+    path("re_inspect_process_3rd/<str:task_num>/<str:work_type>/final_complete_inspect2", inspect_views_3rd.task_complete_module, name ='task_complete'),
 
     # 3차 재검수 페이지 동작 기능 모듈 : 이전 버젼 잔재 모듈
     path("re_inspect_process_3rd/<str:task_num>/check_api", inspect_views_3rd.check_api, name = 'check_api'),

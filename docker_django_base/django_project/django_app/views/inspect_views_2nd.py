@@ -140,7 +140,7 @@ class Inspect_process(TemplateView):
 @method_decorator(login_required(login_url=URL_LOGIN), name='dispatch')
 class Re_Inspect_process(TemplateView):
     template_name = 'django_app/re_inspect_process_2nd.html'
-    template_name1 = 'django_app/inspect_process_2nd_abnormal.html'
+    template_name1 = 'django_app/re_inspect_process_1st_abnormal.html'
 
     def __init__(self):
         self.res_dic = {}

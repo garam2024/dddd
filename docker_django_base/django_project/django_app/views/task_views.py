@@ -72,7 +72,7 @@ class Task_process(TemplateView):
 
     def get(self, request, *args, **kwargs):
 
-        print("task_process get")
+
 
         return redirect("/")
 
@@ -83,13 +83,13 @@ class Task_process(TemplateView):
 
         staff_permission = UserAdapter().get_is_staff(request)
         staff_permission = staff_permission
-        print("staff_permission : ", staff_permission)
+
         if staff_permission :
 
             get_message = TaskInfoAdapter().change_db_info(request, user_name, task_num)
             get_message = str(get_message)
 
-            print("Message : ", get_message)
+
 
             if get_message == 'True':
                 
@@ -128,21 +128,21 @@ class Task_process(TemplateView):
 
             elif get_message == '304' :
 
-                print("작업은 1개씩만 할 수 있습니다.")
+
 
                 messages.info(request, dbinfo.message["mes_work_max_1"])
                 return redirect("task_list")
 
             elif get_message == "404" :
 
-                print("잘못된 접근인 경우")
+
                 
                 messages.info(request, dbinfo.message["mes_already_allocation_work"])
                 return redirect('mywork')
             
             elif get_message == "False" :
                 
-                print("이미 할당된 작업인 경우")
+
                 
                 messages.info(request, dbinfo.message["mes_already_allocation_work"])
                 return redirect('task_list')
@@ -167,7 +167,7 @@ class Re_Task_process(TemplateView):
 
     def get(self, request, *args, **kwargs):
 
-        print("retask_process get")
+
 
         return redirect("/")
 
@@ -211,7 +211,7 @@ class Re_Task_process(TemplateView):
 
             elif get_message == '304':
 
-                print("작업은 1개씩만 할 수 있습니다.")
+
 
                 messages.info(request, dbinfo.message["mes_work_max_1"])
 
@@ -254,21 +254,19 @@ class Re_Task_process(TemplateView):
 ## [유저] 작업 완료 시 DB 정보 갱신 모듈
 def task_complete_module(request, task_num, work_type):
 
-    print('도착')
+
     if request.method == "POST":
-        print('==========')
-        print(task_num)
 
-        TaskInfoAdapter().task_complete_check(request, task_num)
-
-        print("task_complete_module Activate")
 
         message = "success"
+        a = TaskInfoAdapter().task_complete_check(request, task_num)
+
+        if a == '4':
+            message = "notsuccess"
+
         ret = {"message": message}
 
         return HttpResponse(json.dumps(ret), content_type="application/json", status=200)
-
-
 
 ## [유저] 작업 페이지내에서 동작하는 중간 취소 모듈
 def task_middle_cancel_module(request, task_num, work_type):
@@ -277,7 +275,7 @@ def task_middle_cancel_module(request, task_num, work_type):
 
         get_message = str(TaskInfoAdapter().task_middle_cancel(request, task_num))
 
-        print("task_middle_cancel_module Activate")
+
 
         if get_message == "True":
             message = {"message":"success"}
@@ -315,7 +313,7 @@ def info_api(request):
 ## [유저] My_Task 페이지 접속 시 무조건 처음에 DB 데이터를 한번 요청
 def check_api(request, task_num, work_type):
 
-    print("task_num : ", task_num)
+
     user_name = str(request.user)
 
 
@@ -345,8 +343,7 @@ def task_api(request, task_num, work_type):
     ## POST 값을 가져옴
 
     user_name = request.user
-    print("user_name : " + str(user_name))
-    print("task_num : " + str(task_num))
+
 
     # print(json.loads(request.body).get('attributes'))
     getTaskInfo().get_task_db_insert(request, user_name, task_num)
@@ -369,8 +366,7 @@ def task_region_delete(request, task_num, work_type):
         user_name = request.user
         task_num = task_num
 
-        print("task_num : " + str(task_num))
-        print("UserName : " + str(user_name))
+
 
         if work_type == "normal":
             getTaskInfo().task_db_delete_abnormal(request, user_name, task_num)
@@ -388,6 +384,29 @@ def task_region_delete(request, task_num, work_type):
         ret = {"message": e}
         return HttpResponse(json.dumps(ret), content_type="application/json")
 
+#경진 xml제출 테스팅
+def task_xml_insert(request, task_num, work_type):
+    ## POST 값을 가져옴
+    try:
+        user_name = request.user
+        task_num = task_num
+
+        print("task_num : " + str(task_num))
+
+
+        getTaskInfo().tasklist_reset(request, task_num)
+
+
+        ## 정보가 없다고 하면 고유 ID and image Path
+        ## 정보가 있다고 하면 JSON 정보만
+        message = 1
+
+        ret = {"message": message}
+
+        return HttpResponse(json.dumps(ret), content_type="application/json")
+    except Exception as e:
+        ret = {"message": e}
+        return HttpResponse(json.dumps(ret), content_type="application/json")
 
 
 
@@ -398,8 +417,7 @@ def task_region_delete_abnormal(request, task_num, work_type):
         user_name = request.user
         task_num = task_num
 
-        print("task_num : " + str(task_num))
-        print("UserName : " + str(user_name))
+
 
         getTaskInfo().task_db_delete_abnormal(request, user_name, task_num)
 

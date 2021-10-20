@@ -24,8 +24,7 @@ try:
     work_type = ["normal","interface"]
 
     for workType in work_type:
-        print("%s 작업 시작.." % workType)
-        print("%s 작업 목록 추출.." % workType)
+
         #이상행동 json 데이터 읽기
         sqlNorlistid  = "select "
         sqlNorlistid += " work_id "

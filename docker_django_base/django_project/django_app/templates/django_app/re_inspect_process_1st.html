@@ -1,76 +1,8 @@
 <!DOCTYPE html>
 {% load static %}
 <html>
-
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- favicon -->
-    <link rel="shortcut icon" href="#">
-
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"> <!-- CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
-    <!-- 테마 -->
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet"> <!-- 자바스크립트 -->
-
-    <!-- stylesheet -->
-    <link rel="stylesheet" href="{%static 'django_app/car_interface/css/style.css' %}" />
-    <!-- <link rel="stylesheet"  href="{%static 'django_app/car_interface/css/style2.css' %}" /> -->
-    <link rel="stylesheet" href="{%static 'django_app/car_interface/css/ribbon.css' %}" />
-
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
-
-    <!-- wavesurfer -->
-    <script src="https://unpkg.com/wavesurfer.js/dist/wavesurfer.js"></script>
-    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.timeline.js"></script> <!-- timeline plugin -->
-    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.regions.js"></script> <!-- regions plugin -->
-    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.minimap.js"></script> <!-- minimap plugin -->
-    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.cursor.js"></script> <!-- cursor plugin -->
-    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.markers.js"></script> <!-- markers plugin -->
-    <link rel="screenshot" itemprop="screenshot"
-        href="https://katspaugh.github.io/wavesurfer.js/example/screenshot.png" /> <!-- example img -->
-
-    <!-- fabric -->
-    <script>
-        (function () {
-            var fabricUrl = "{%static 'django_app/car_interface/lib/fabric.js' %}";
-            if (document.location.search.indexOf('load_fabric_from=') > -1) {
-                var match = document.location.search.match(/load_fabric_from=([^&]*)/);
-                if (match && match[1]) {
-                    fabricUrl = match[1];
-                }
-            }
-            document.write('<script src="' + fabricUrl + '"><\/script>');
-        })();
-    </script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
-
-    <!-- hand pose -->
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
-
-    <!-- xml2json -->
-    <script type="text/javascript" src="{%static 'django_app/car_interface/lib/xml2json.js' %}"></script>
-
-    <!-- zip file download -->
-    <script async type="text/javascript" src="{%static 'django_app/car_interface/lib/jszip.min.js' %}" charset="utf-8">
-    </script>
-    <script async type="text/javascript" src="{%static 'django_app/car_interface/lib/FileSaver.min.js' %}"
-        charset="utf-8"></script>
-    <script async type="text/javascript" charset="utf-8"></script>
-
-    <!-- google analytics -->
-    <script src="{%static 'django_app/car_interface/lib/master.js' %}"></script>
-    <!-- [lib] END ------------------------------------------------------------------------------------------- -->
-
+{% include "django_app/include/interface_head.html" %}
 <body itemscope itemtype="http://schema.org/WebApplication">
     <!-- <div class="page-loading">
       <div class="message">
@@ -96,7 +28,8 @@
   </div> -->
     <!-- 헤더 & 툴 박스 -->
     <header class="header">
-        <div><a href="{% url  'main'%}"><img alt="AI cloud" src="{% static 'django_app/img/logo/gjac_logo.png' %}"></a>
+        <div>
+            <a href="{% url  'main'%}"><img alt="AI cloud" src="{% static 'django_app/img/logo/gjac_logo.png' %}"></a>
         </div>
     </header>
     <!-- <title>Bounding Page</title>
@@ -117,12 +50,12 @@
 
     <!-- export video -->
 
-    <input type="hidden" id="exportVideo" value="{{task_info_list.video_path}}">
-    <input type="hidden" id="tasknumber" value="{{task_info_list.work_id}}">
-    <input type="hidden" id="groupId" value="{{task_info_list.group_id}}">
+    <input type="hidden" id="exportVideo" value="{{task_info_list.video_path}}" />
+    <input type="hidden" id="tasknumber" value="{{task_info_list.work_id}}" />
+    <input type="hidden" id="groupId" value="{{task_info_list.group_id}}" />
       <!-- input db region -->
-    <input type="hidden" id="inputRegion" value="{{task_region}}">
-    <inptu type="hidden" id="memodata" value="{{task_info_list.memo}}">
+    <input type="hidden" id="inputRegion" value="{{task_region}}" />
+    <inptu type="hidden" id="memodata" value="{{task_info_list.memo}}" />
 
     <!-- input file -->
     <input id="file" type="file" accept="video/mp4,video/mkv, video/x-m4v,video/*" class="hidden" />
@@ -242,7 +175,7 @@
                     </div>
                     <div>
                         <button id="modelReload" class="btn btn-info btn-block" onclick="modelReload()">
-                            <i class="glyphicon glyphicon-refresh"></i>&nbsp;
+                            <i class="glyphicon glyphicon-refresh"></i>
                             이전작업 호출
                         </button>
                     </div>
@@ -266,7 +199,7 @@
                   next
               </button>
           </div> -->
-                </div>
+            </div>
                 <form role="form" name="edit" id="selectForm" style="transition: opacity 300ms linear;">
 
                     <div class="form-group">
@@ -374,23 +307,9 @@
                 </form>
             </div>
         </div>
-
-
-
-
-
-
-
         <!-- form hidden 하지 않을 것 -->
         <!-- <form role="form" name="edit" style="visibility: hidden; transition: opacity 300ms linear;"> -->
-
-
     </div>
-
-
-
-
-
     <!-- [js] START ------------------------------------------------------------------------------------------- -->
     <script>  // video, xml 다운로드
         $(document).ready(function () {
@@ -433,7 +352,7 @@
             document.querySelector(".btn-danger").disabled = true;
             //경진
             document.querySelector(".btn-save").disabled = true;
-   
+
             alert("\"작업 순서\" : video 업로드 => 작업 시작")
         });
 
@@ -449,7 +368,7 @@
             linkElement.setAttribute('download', file_name);
             linkElement.click();
 
-            $(':focus').blur();  
+            $(':focus').blur();
         })
 
         // xml 다운로드 버튼을 누르는 것으로 변경
@@ -477,18 +396,17 @@
                     alert("대응하는 xml파일이 없습니다.\n관리자 문의바랍니다.")
                 })
 
-            $(':focus').blur();  
+            $(':focus').blur();
         })
-    </script>
 
-    <script>  // video 업로드
+        // video 업로드
         var mode = '재검수'
-        
+
         // //상민
         var store = {}
         var page = ''
-        //페이지 정보 
-    
+        //페이지 정보
+
         // video load button
         const inputFile = document.getElementById("file");
         const fileLoad = document.getElementById('fileLoad')
@@ -604,7 +522,7 @@
                 Object.keys(wavesurfer.regions.list).map(function (id) {
                     // drag, resize : false
                     wavesurfer.regions.list[id].update({drag: false, resize: false});
-                    
+
                     // cp region info to allRegions
                     allRegions.push(wavesurfer.regions.list[id])
                 })
@@ -677,7 +595,7 @@
         }
 
         //상민
-      
+
 
         // function selectedCheck(){
         //     var handpose = document.querySelector('#handpose')
@@ -700,168 +618,7 @@
 
         //selectedCheck()
     </script>
+    {% include "django_app/include/interface_foot.html" %}
 
-
-    <script src="{%static 'django_app/car_interface/js/loadXml.js' %}"></script>
-
-    <script src="{%static 'django_app/car_interface/js/ctrlCanvas.js' %}"></script>
-    <script src="{%static 'django_app/car_interface/js/ctrlWavesurfer.js' %}"></script>
-
-    <script src="{%static 'django_app/car_interface/js/ctrlSetBtn.js' %}"></script>
-    <script src="{%static 'django_app/car_interface/js/ctrlLabelForm.js' %}"></script>
-    <script src="{%static 'django_app/car_interface/js/ctrlClip.js' %}"></script>
-    <script src="{%static 'django_app/car_interface/js/ctrlFrame.js' %}"></script>
-    <script src="{%static 'django_app/car_interface/js/ctrlHandpose.js' %}"></script>
-
-    <script src="{%static 'django_app/car_interface/js/resetInfo.js' %}"></script>
-    <script src="{%static 'django_app/car_interface/js/exportJson.js' %}"></script>
-    <script src="{%static 'django_app/car_interface/js/scWavesurfer.js' %}"></script>
-
-    <!-- 푸터 -->
-    <footer class="container-fluid footer">
-        <div class="footer_container">
-            <p>광주인공지능센터</p>
-            <p>주소: 광주 동구 동계천로 150 / 문화전당역4번 출구에서 683m</p>
-            <p><span class="glyphicon glyphicon-earphone"></span> 062-223-1335</p>
-        </div>
-    </footer>
-    <!-- fabric -->
-    <script>
-        $.ajaxSetup({
-            headers: {
-                "X-CSRFToken": '{{csrf_token}}'
-            }
-        });
-    </script>
-    <script>
-      const final_complete_inspect1 = document.getElementById('final_complete_inspect1')
-      final_complete_inspect1.addEventListener('click', e => {
-        $.ajax({
-            url: "task_complete",
-            type: "POST",
-            data: JSON.stringify({
-              group: document.getElementById("groupId").value
-            },),
-            success: function(){
-            window.location.assign('/mywork')
-            },
-            error: function(){
-            // console.log('error')
-            }
-        })
-      })
-          const inspectSuccess = document.getElementById('inspectSuccess')
-      inspectSuccess.addEventListener('click', e => {
-
-        var check =  memoArray.length > 0? '반려':'통과'
-
-        $.ajax({
-            url: "task_complete",
-            type: "POST",
-            data: JSON.stringify({
-                group: document.getElementById("groupId").value,
-                memo: memoArray,
-                check: check
-            }),
-            success: function(){
-                window.location.assign('/mywork')
-            },
-            error: function(){
-            // console.log('error')
-            }
-        })
-
-      })
-    </script>
-
-    <!-- <script>
-    $(document).ready(function() {
-        var file_path = document.getElementById('orgVideo').getAttribute('src');
-        var file_name = file_path.substring(file_path.lastIndexOf('/') + 1);
-        
-        // $.ajax({
-        //     url : '../../file_download/' + file_name,
-        //     type : 'GET', // get post put delete
-        //     // data : {
-        //     //     video_name : file_name,
-        //     // },
-        //     success : function(data){
-        //         console.log('hhh');
-        //     }
-        //     });
-        let linkElement = document.createElmeent('a');
-        linkElement.setAttribute('href', '/media/django_app/action_video/' + file_name);
-        linkElement.setAttribute('download', file_name);
-        linkElement.click();
-        
-    });
-
-</script> -->
-
-    <!-- <script src="{%static 'django_app/js/tool/submit.js' %}"></script>
-    <script src=" {% static 'django_app/js/tool/fabric.min.js'%}"></script>
-   
-    <script src="{% static 'django_app/js/tool/bounding_util.js'%}"></script> -->
-    <!-- <script src=" {% static 'django_app/js/tool/labeling.js'%}"></script> -->
-<script>
-      
-  /*function formMessage(e){
-              
-    let form = e.currentTarget.parentNode
-    let classList = e.currentTarget.classList
-    // if(e.currentTarget.classList)
-
-    if(classList.contains('choice_1')){
-      Swal.fire({
-        title: '정말 취소하시겠습니까?',
-        showDenyButton: true,
-        confirmButtonText: '확인',
-        denyButtonText: '취소',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          form.submit()
-        } else if (result.isDenied) {
-          return
-        }
-      })
-    }else if(classList.contains('choice') && !classList.contains('loading-middle')){
-      Swal.fire({
-        title: '작업 하시겠습니까?',
-        showDenyButton: true,
-        confirmButtonText: '확인',
-        denyButtonText: '취소',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          form.submit()
-        } else if (result.isDenied) {
-          return
-        }
-      })
-    }else if(classList.contains('choice') && classList.contains('loading-middle'))
-
-    Swal.fire({
-        title: '작업 하시겠습니까?',
-        showDenyButton: true,
-        confirmButtonText: '확인',
-        denyButtonText: '취소',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          const processForm = document.querySelector('#processForm')
-          processForm.addEventListener('click', e => {
-              if(e.target.nodeName !== 'BUTTON') return
-              // if(e.target.classList.indexOf('choice') !== -1){
-                const processLoading = document.querySelector('.process-loading')
-                processLoading.classList.add('active')
-              // }
-          })
-
-          form.submit()
-        } else if (result.isDenied) {
-          return
-        }
-      })
-  }*/
-</script>
 </body>
-
 </html>

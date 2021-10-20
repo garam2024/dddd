@@ -16,12 +16,17 @@ urlpatterns = [
     path('index/change_auth', admin_views.changeAuth, name='change_auth'), #(작업권한, 검수권한) 바꾸기
     path('index/get_search_data', admin_views.getSearchData, name='get_search_data'), #아작스 서치
     path('index/adminview', admin_return_views.adminTaskCheck.as_view(), name='adminview'),
+    path("index/get_statusDic", base_views.get_statusDic, name = "get_statusDic"),
     path("index/adminview/get_statusDic", base_views.get_statusDic, name = "get_statusDic"),
 
     path('index/adminview/admin_complete', admin_return_views.admin_complete, name='admin_complete'),
     path('index/adminview/task_api', admin_return_views.task_api, name='task_api'),
     path("index/adminview/check_task", admin_return_views.check_task, name='check_task'),
 
+    # 윤주
+    path('standard/', admin_views.adminStandard.as_view(), name='admin_standard'),
+    #path('index/man/', admin_views.adminManufact.as_view(), name='admin_man'),
+    path('man/', admin_views.adminManufact.as_view(), name='man'),
 
 
 

@@ -65,7 +65,7 @@ class Inspect_process(TemplateView):
 
     def get(self, request, *args, **kwargs):
 
-        print("inspect_process_3rd get")
+
 
         return redirect("/")
 
@@ -81,7 +81,7 @@ class Inspect_process(TemplateView):
         inspect_permission = UserAdapter().get_is_inspector(request)
         compare_result = InspectAdapter_3rd().get_compare_result(request, task_num)
 
-        print("Compare Result &&&&&&&& : ", compare_result )
+
         if inspect_permission:
             
             if compare_result:
@@ -89,7 +89,7 @@ class Inspect_process(TemplateView):
                 get_message = InspectAdapter_3rd().change_db_info(request, user_name, task_num)
                 get_message = str(get_message)
 
-                print("message text : ", get_message)
+
 
                 if get_message == "304" :
                     
@@ -232,8 +232,7 @@ def task_complete_module2(request, work_id,work_type):
     task_num = work_id
     print('도착')
     if request.method == "POST":
-        print('==========')
-        print(task_num)
+
 
         TaskInfoAdapter().task_complete_check(request, task_num)
 

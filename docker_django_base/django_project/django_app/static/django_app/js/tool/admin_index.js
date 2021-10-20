@@ -1,3 +1,19 @@
+let currentPage = 0;
+
+$.ajax({
+    type:'POST',
+    url : '/admin/index/get_statusDic',
+    async:false,
+    success : function(data){
+        dbinfo = data
+        console.log(dbinfo)
+    },
+    error:function(err){
+    alert('작업상태불러오기실패_새로고침을눌러주세요')
+    },
+    })
+
+
 function SortTable(table){
     this.table = table
 } 
@@ -228,29 +244,56 @@ inputChangeCheck.addEventListener('click', function(e){
     }
 })
 
+let searchData = {
+    workerNm: '',
+    workType: '',
+    workStatus: '',
+    searchBgn: '',
+    searchEnd: '',
+    groupId: ''
+}
+
 var searchForm = document.forms.searchForm
 
 searchForm.addEventListener('submit', e => {
     e.preventDefault()
-    var { workerNm, workType, workStatus, searchBgn, searchEnd, workGroup } = searchForm
-
-    console.log(workerNm.value, workType.value, workStatus.value, searchBgn.value, searchEnd.value)
-
-    let data = {
-        workerNm: workerNm.value,
-        workType: workType.value,
-        workStatus: workStatus.value,
-        searchBgn: searchBgn.value,
-        searchEnd: searchEnd.value,
-        groupId: workGroup.value
+    jsf_ajax_dataloading(0)
+})
+function jsf_ajax_dataloading(page){
+    let user_group_id = $("#group_id").val();
+    if(user_group_id == "-"){
+        var { workerNm, workType, workStatus, searchBgn, searchEnd, workGroup } = searchForm;
+        console.log(workerNm.value, workType.value, workStatus.value, searchBgn.value, searchEnd.value);
+        searchData = {
+            workerNm: workerNm.value,
+            workType: workType.value,
+            workStatus: workStatus.value,
+            searchBgn: searchBgn.value,
+            searchEnd: searchEnd.value,
+            groupId: workGroup.value,
+            page : page
+        }
+    }else{
+        var { workerNm, workType, workStatus, searchBgn, searchEnd} = searchForm;
+        console.log(workerNm.value, workType.value, workStatus.value, searchBgn.value, searchEnd.value);
+        searchData = {
+            workerNm: workerNm.value,
+            workType: workType.value,
+            workStatus: workStatus.value,
+            searchBgn: searchBgn.value,
+            searchEnd: searchEnd.value,
+            groupId: user_group_id,
+            page : page
+        }
     }
 
-    console.log(data)
+    console.log(searchData)
 
     $.ajax({
         type: 'post',
         url: 'get_search_data',
-        data : JSON.stringify(data),
+        data : JSON.stringify(searchData),
+        async: false,
         success: function(data){
             console.log(data)
            if(data.messages == 'false'){
@@ -261,52 +304,55 @@ searchForm.addEventListener('submit', e => {
                 if(data.length != 0){
 
                     workViewTable.innerHTML = ''
+                    var worklist_len = $("#postLength").val(data[0].tot_cnt);
                     for(let i = 0; i < data.length; i ++){
                         var status = statusButton(data[i].work_status)
+
                         var tr = document.createElement('tr')
                         workViewTable.append(tr)
                         var group_id = group(data[i].group_id)
                         var statusNum = userByStatus(data[i].work_status)
-
                         tr.innerHTML +=`
                             <td>${data[i].work_id? data[i].work_id: '-'}</td>
                             <td>${data[i].str_type? data[i].str_type: '-'}</td>
                             <td>${data[i]['worker_name' + statusNum]? data[i]['worker_name' + statusNum]: '-'}</td>
-                            <td>${data[i].str_status? data[i].str_status: '-'}</td>
-                            <td>${group_id? group_id: '-'}</td>
-                            <td>${status? '<button data-work="admin_work_view">작업보기</button>' : '-'}</td>
-                            <td>${data[i].reg_date? data[i].reg_date.split('T')[0]: '-'}</td>`
+                            <td>${data[i].str_status? data[i].str_status: '-'}</td>`
+                        if (user_group_id == "-"){
+                            tr.innerHTML +=`
+                                <td>${group_id? group_id: '-'}</td>
+                                <td>${status? '<button data-work="admin_work_view">작업보기</button>' : '-'}</td>
+                                <td>${data[i].reg_date? data[i].reg_date.split('T')[0]: '-'}</td>`
+                        }else{
+                            tr.innerHTML +=`
+                                <td>${status? '<button data-work="admin_work_view">작업보기</button>' : '-'}</td>
+                                <td>${data[i].reg_date? data[i].reg_date.split('T')[0]: '-'}</td>`
+                        }
 
                         tr.innerHTML += status? `<input data-work='id' type='hidden' value=${data[i].work_id}>
                                 <input data-work='type' type='hidden' value=${data[i].work_type}>
                                 <input data-work='status' type='hidden' value=${data[i].work_status}>` : ''
                     }
+
+                    // paging.init()
                 }else{
-                    workViewTable.innerHTML = `<tr><td colspan='7'>검색 결과가 없습니다.</td></tr>`
+                    if (user_group_id == "-") {
+                        workViewTable.innerHTML = `<tr><td colspan='7'>검색 결과가 없습니다.</td></tr>`
+                    }else{
+                        workViewTable.innerHTML = `<tr><td colspan='6'>검색 결과가 없습니다.</td></tr>`
+                    }
                 }
            }
+            paging(page);
         },
         error: function(err){
             alert('저장 실패')
         }
     })
-})
+}
+
 var dbinfo
 //pathname 에 따라 페이지 설정해주기
 
-
-$.ajax({
-    type:'POST',
-    url : '/get_statusDic',
-    async:false,
-    success : function(data){
-        dbinfo = data
-        console.log(dbinfo)
-    },
-    error:function(err){
-    alert('작업상태불러오기실패_새로고침을눌러주세요')
-    },
-    })
 //a , j, k, r4, l, i,
 function statusButton(val){
     var condition = [dbinfo['status_work_deagi'], dbinfo['status_1cha_companion_cansel'], dbinfo['status_2cha_companion_cansel'], dbinfo['status_job_cansel'], dbinfo['status_3cha_companion_cansel'], dbinfo['status_complet']]
@@ -356,3 +402,141 @@ function userByStatus(status){
             break
     }
 }
+
+function paging(page){
+    $(".paging").empty();
+    let tot_cnt = $("#postLength").val();
+    console.log(tot_cnt)
+    let pageSize = 10;
+    let pageTotNum = Math.floor(tot_cnt/pageSize) + (tot_cnt%pageSize > 0 ? 1 : 0);
+    let pageStr = "<ul class = \"pageTable start\">";
+    let startPage = Math.floor(page/pageSize);
+    startPage = startPage*pageSize;
+    let endPage = startPage + pageSize;
+    endPage = endPage > pageTotNum ? pageTotNum : endPage;
+
+    pageStr += "<li><a class=\"first\" href='#' onclick='jsf_ajax_dataloading(0)' \">처음</a></li>";
+    for(var i = startPage; i < endPage; i ++){
+        if (page == i){
+            pageStr += "<li><a class=\"active num\" href='#' onclick='jsf_ajax_dataloading(" + i + ")'\">"+ i +"</a></li>";
+        }else{
+            pageStr += "<li><a class=\"num\" href='#' onclick='jsf_ajax_dataloading(" + i + ")'\">"+ i +"</a></li>";
+        }
+    }
+    pageStr += "<li><a class=\"last\" href='#' onclick='jsf_ajax_dataloading(" + (pageTotNum - 1) + ")'\">끝</a></li>"
+    pageStr += "</ul>"
+    $(".paging").html(pageStr);
+}
+
+// var paging = {
+//     start: 0, //맨 앞
+//     end: 0, //맨 뒤
+//     now: 0, //현재
+//     postNum: 0, //전체 글 개수
+//     bringNum: 10, //몇개씩 가져올꺼니?
+//
+//     init: function(){
+//         paging.start = 0
+//         paging.end = 0
+//         paging.now = 0
+//         paging.postNum = 0
+//
+//         //계산
+//
+//     },
+//
+//     click: function(e){
+//         console.log(e)
+//     },
+//
+//     activeEvent: function(){
+//         var pagingElement = document.querySelector('.paging')
+//         pagingElement.addEventListener('click', function(e){
+//             paging.click(e)
+//         })
+//     }//두번 생성 X
+// }
+//
+// paging.activeEvent()
+
+// var searchForm_02 = document.forms.searchForm_02
+//
+// searchForm_02.addEventListener('submit', e => {
+//     e.preventDefault()
+//     var { workerNm, startday, endday } = searchForm_02
+//
+//     let data = {
+//         workerNm: workerNm.value,
+//         startday: startday.value,
+//         endday: endday.value
+//     }
+//
+//     $.ajax({
+//         type: 'post',
+//         url: 'get_search_data',
+//         data : JSON.stringify(data),
+//         success: function(data){
+//             console.log(data)
+//            if(data.messages == 'false'){
+//             alert('검색 조건을 입력하세요.')
+//            }else{
+//             var workViewTable = document.querySelector('.workViewTable')
+//                 console.log(workViewTable)
+//                 console.log('작동했니?')
+//                 if(data.length != 0){
+//                     workViewTable.innerHTML = ''
+//                     for(let i = 0; i < data.length; i ++){
+//                         workViewTable.innerHTML +=
+//                         `<tr>
+//                             <td>${data[i].group_name_code}</td>
+//                             <td>${data[i].status_name}</td>
+//                             <td>${data[i].coalesce}</td>
+//                          </tr>
+//                         `
+//                     }
+//                 }else{
+//                     workViewTable.innerHTML = `<td colspan='6'>검색 결과가 없습니다.</td>`
+//                 }
+//            }
+//         },
+//         error: function(err){
+//             alert('저장 실패')
+//         }
+//     })
+//
+//     $.ajax({
+//         type: 'post',
+//         url: 'get_search_data',
+//         data : JSON.stringify(data),
+//         success: function(data){
+//             console.log(data)
+//            if(data.messages == 'false'){
+//             alert('검색 조건을 입력하세요.')
+//            }else{
+//             var workViewTable = document.querySelector('.workViewTable')
+//                 console.log(workViewTable)
+//                 console.log('작동했니?')
+//                 if(data.length != 0){
+//                     workViewTable.innerHTML = ''
+//                     for(let i = 0; i < data.length; i ++){
+//                         workViewTable.innerHTML +=
+//                         `<tr>
+//                             <td>${data[i].worker_id? data[i].worker_id: ''}</td>
+//                             <td>${data[i].job_name}</td>
+//                             <td>${data[i].work_name}</td>
+//                             <td>${data[i].video_path}</td>
+//                             <td>${data[i].clip_cnt}</td>
+//                             <td>$</td>
+//                          </tr>
+//                         `
+//                     }
+//                 }else{
+//                     workViewTable.innerHTML = `<td colspan='6'>검색 결과가 없습니다.</td>`
+//                 }
+//            }
+//         },
+//         error: function(err){
+//             alert('저장 실패')
+//         }
+//     })
+// })

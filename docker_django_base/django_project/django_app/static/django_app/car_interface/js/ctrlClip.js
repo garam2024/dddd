@@ -42,7 +42,8 @@
  
  clipsContainer.addEventListener('dblclick', e => {
      // e.target.id는 regionId
-     // console.log(e.target.id);
+     console.log('더블 클릭')
+//      console.log(e.target.id);
      e.stopPropagation();
  
      // 삭제 시 tmpImage가 삭제된 regionId를 가지므로 오류발생

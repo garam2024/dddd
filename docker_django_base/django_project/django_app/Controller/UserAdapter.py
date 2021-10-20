@@ -41,17 +41,19 @@ class UserAdapter:
     def get_profile(self, request):
 
         try:
-            primary_id = User.objects.get(username=request.user)
-            profile = Profile.objects.get(user_id=primary_id).account_id
 
+            a = sqlMethod()
+            profile = a.select_workList(table_name="django_app_profile",data_dic={'account_id':str(request.user)},column_list={'account_id'})
+            a.close()
+            profile = profile[0]['account_id']
+            print("request.user",request.user)
             print("profile", profile)
-
             return profile
 
         except:
 
             print("User Info 갱신 실패")
-
+            a.close()
             return False
             raise
 

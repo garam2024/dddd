@@ -1,13 +1,8 @@
+{% extends 'django_app/manage/admin_base.html' %}
 {% load static %}
 안녕
-<!DOCTYPE html>
-<html lang="ko">
+{% block contents %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
        <!-- Latest compiled and minified CSS -->
        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
        <!-- jQuery library -->
@@ -16,9 +11,8 @@
        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
        <!-- lodash -->
        <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
-      
-       
-       <link rel="shortcut icon" href="{%static 'django_app/img/logo/gjac_favicon.ico' %}">
+
+
        <link rel="stylesheet" href="{%static 'django_app/css/commons.css' %}">
        <link rel="stylesheet" href="{%static 'django_app/css/admin_index.css' %}">
 
@@ -30,9 +24,11 @@
                 $("#datepicker1,#datepicker2").datepicker({
                      dateFormat: 'yy-mm-dd'
                 });
+                jsf_ajax_dataloading(0)
+                paging(currentPage);
             });
         </script>
-</head>
+
 <body>
 
   {% for message in messages %}
@@ -43,22 +39,8 @@
 {% endfor %}
 
 
-
-    <header class="header">
-        <h1 class="logo">
-            <a href="{% url 'main' %}"><img src="{% static 'django_app/img/logo/gjac_logo.png' %}" alt="로고"></a>
-        </h1>
-    </header>
     <main class="admin-page container">
-        <nav class="col-lg-2 side-nav">
 
-            <form method="post" action="{% url 'logout_module' %}">
-                <input id="alertLogout" type="submit" value="로그아웃" class="button btn-default">
-            </form>
-            <button type="button" class="button btn-default">작업 현황</button>
-            <button type="button" class="button btn-default">유저 권한 관리</button>
-            <a href="{% url 'insert_work' %}" class="button btn-default">작업 등록</a>
-        </nav>
         <section class="col-lg-10">
             <h3>프로젝트 진척도</h3>
             <div class="work-progress">
@@ -111,22 +93,7 @@
                 </ul>
 
             </div>
-            <!--작업상태 dbinfo 딕셔너리 가져오기  -->
-<!--              <script>-->
-<!--                                var dbinfo-->
-<!--                                $.ajax({-->
-<!--                                    type:'POST',-->
-<!--                                    url : '/get_statusDic',-->
-<!--                                    async:false,-->
-<!--                                    success : function(data){-->
-<!--                                        dbinfo = data-->
-<!--                                        console.log(dbinfo)-->
-<!--                                    },-->
-<!--                                    error:function(err){-->
-<!--                                    alert('작업상태불러오기실패_새로고침을눌러주세요')-->
-<!--                                    },-->
-<!--                                    })-->
-<!--                            </script>-->
+
 
 
 
@@ -180,6 +147,7 @@
                                         <input type="text" id="datepicker2" class="form-control" name="searchEnd" placeholder="종료일 선택"  autocomplete='off'>
                                     </div>
                                 </div>
+                                {% if group_id == "-" %}
                                <div class="condition">
 <!--                                    작업  :-->
                                     <select id="workGroup" name="workGroup" class="form-control">
@@ -189,13 +157,15 @@
                                         <option value="dtw">디투리소스</option>
                                     </select>
                                 </div>
+                                {% endif %}
+
                             </div>
                             <div class="searchSubmit">
-                                <button type="submit" class="btn btn-primary btn-lg">검색</button>
+                                <button id="searchBtn" type="submit" class="btn btn-primary btn-lg">검색</button>
 <!--                                <button type="button" class="btn btn-primary btn-lg">초기화</button>-->
                             </div>
                         </div>
-
+                        <input type="hidden" id="group_id" value="{{ group_id }}">
                     </form>
 
 
@@ -208,7 +178,9 @@
                                 <th data-number='2'>작업자 이름</th>
                                 <!-- <th data-number='3'>작업자 이름</th> -->
                                 <th data-number='3'>작업상태</th>
+                                {% if group_id == "-" %}
                                 <th data-number='4'>소속</th>
+                                {% endif %}
                                 <th data-number='5'>작업보기</th>
 
                                 <th data-number='6'>등록일</th>
@@ -221,71 +193,42 @@
                             </tr>
                             </thead>
                             <tbody class="workViewTable"><!-- class="success" danger info warning active-->
-                            <!-- 동경 테스트함 -->
-                            {% if all_task_list|length == 0 %}
-                            <tr>
-                                <td colspan="7">검색 결과가 없습니다. </td>
-                            </tr>
-                            {% else %}
-                            {% for item in all_task_list %}
-                            <tr>
-                                <td>{{item.work_id}}</td>
-                                <td><button type="button" data-search="product">{{item.str_type}}</button></td>
-
-                                {% if item.work_status == dbinfostatus.status_work_run or item.work_status == dbinfostatus.status_1cha_companion_return %}
-                                <td>{{item.worker_name1}}</td>
-                                {% elif item.work_status == dbinfostatus.status_1cha_inspect_run or item.work_status == dbinfostatus.status_2cha_companion_return %}
-                                <td>{{item.worker_name2}}</td>
-                                {% elif item.work_status == dbinfostatus.status_2cha_inspect_run or item.work_status == dbinfostatus.status_3cha_companion_return %}
-                                <td>{{item.worker_name3}}</td>
-                                {% elif item.work_status == dbinfostatus.status_3cha_inspect_run or item.work_status == dbinfostatus.status_job_cansel %}
-                                <td>{{item.worker_name4}}</td>
-                                {% else %}
-                                <td>-</td>
-                                {% endif %}
-
-                                <td>{{item.str_status}}</td>
-                                <td>
-                                     <script>
-                                            (function(){
-                                                var val = '{{item.group_id}}'
-                                                if(val){
-                                                    if(val === 'gjac'){
-                                                        document.write('광주 인공지능센터')
-                                                    }else if(val === 'dtw'){
-                                                        document.write('디투리소스')
-                                                    }else if(val === 'tbit'){
-                                                        document.write('으뜸정보기술')
-                                                    }else{
-                                                        document.write('알 수 없는 값')
-                                                    }
-                                                }else{
-                                                    document.write('소속 없음')
-                                                }
-                                            }())
-                                    </script>
-                                </td>
-
-                              {% if item.work_status in workviewConfirm %}
-                                <td></td>
-                               {%  else %}
-                                <td><button data-work="admin_work_view">작업보기</button></td>
-                               {% endif %}
-                                <td>{{item.reg_date|date:"Y-m-d"}}</td>
-                                <input data-work="id" type="hidden" value="{{item.work_id}}">
-                                <input data-work="type" type="hidden" value="{{item.work_type}}">
-                                <input data-work="status" type="hidden" value="{{item.work_status}}">
-
-
-
-
-
-                            </tr>
-                            {% endfor %}
-                            {% endif %}
-
                             </tbody>
                         </table>
+
+                    </div>
+                    <input type="hidden" value="" id="postLength">
+                     <div class="paging">
+{#                        {% if all_task_list.has_other_pages %}#}
+{#                          <ul class = "pageTable start">#}
+{##}
+{#                            {% if all_task_list.has_previous %}#}
+{#                              <li><a class="first" href="?page=1">처음</a></li>#}
+{#                              <li><a class="pre" href="?page={{ all_task_list.previous_page_number }}"> < </a></li>#}
+{#                            {% else %}#}
+{#                              <li class="page-item disabled"> <a class="page-link" href="#">처음</a></li>#}
+{#                              <li class="page-item disabled"> <a class="page-link" href="#"> < </a></li>#}
+{#                            {% endif %}#}
+{##}
+{#                            {% for i in page_range %}#}
+{#                              {% if all_task_list.number == i %}#}
+{#                                <li><a class="active num" href="?page={{ i }}">{{ i }} </a></li>#}
+{#                              {% else %}#}
+{#                                <li><a class="num" href="?page={{ i }}">{{ i }}</a></li>#}
+{#                              {% endif %}#}
+{#                            {% endfor %}#}
+{##}
+{#                            {% if all_task_list.has_next %}#}
+{#                               <li><a class="next" href="?page={{ all_task_list.next_page_number }}"> > </a></li>#}
+{#                               <li><a class="last" href="?page={{ all_task_list.paginator.num_pages }}">끝</a></li>#}
+{#                            {% else %}#}
+{#                              <li class="page-item disabled"> <a class="page-link" href="#"> > </a> </li>#}
+{#                              <li class="page-item disabled"> <a class="page-link" href="#">끝</a> </li>#}
+{#                            {%endif %}#}
+{##}
+{#                            </ul>#}
+{#                        {%endif%}#}
+
                     </div>
                 </div>
                 <!-- 목록이 없을 때 -->
@@ -312,9 +255,6 @@
                                 <th></th>
                             </tr>
                             </thead>
-
-
-
 
 
 
@@ -403,15 +343,9 @@
 
 
         </section>
-        </div>
+
     </main>
-    <footer class="container-fluid footer">
-        <div class="container">
-            <p>광주인공지능센터</p>
-            <p>주소: 광주 동구 동계천로 150 / 문화전당역4번 출구에서 683m</p>
-            <p><span class="glyphicon glyphicon-earphone"></span> 062-223-1335</p>
-        </div>
-    </footer>
+    {% endblock %}
     <div class="modal-background">
         <div class="modal-inner">
             <h4>반려 사유를 작성해 주세요.</h4>
@@ -430,6 +364,7 @@
         <input name="work_status" value="">
     </form>>
     <script>
+
 
         const modal = document.querySelector('.modal-background')
         const modal_teatArea = modal.querySelector('textarea')
@@ -488,14 +423,15 @@
         Swal.fire({
           icon: 'success', // Alert 타입
           title: adminMessage, // Alert 제목
-
         })
+
      })
     }
 
     </script>
 
      <script>
+
 
 
      let workViewTable = document.querySelector(".workViewTable");
@@ -527,19 +463,17 @@
 
         console.log(workId,workType, workStatus)
         if (e.target.dataset.work =="admin_work_view"){
-        //var pop= window.open("",'작업확인',"")
+            //var pop= window.open("",'작업확인',"")
 
-        var admin = document.forms.admin_view
-        admin.action = '/admin/index/adminview'
-        admin.target = "_new"
-        admin.work_id.value = workId
-        admin.work_type.value = workType
-        admin.work_status.value = workStatus
+            var admin = document.forms.admin_view
+            admin.action = '/admin/index/adminview'
+            admin.target = "_new"
+            admin.work_id.value = workId
+            admin.work_type.value = workType
+            admin.work_status.value = workStatus
 
-        admin.submit()
-
-
-}
+            admin.submit()
+        }
 
 
 
@@ -560,7 +494,7 @@
 
 
 </body>
-</html>
+
 
 
 

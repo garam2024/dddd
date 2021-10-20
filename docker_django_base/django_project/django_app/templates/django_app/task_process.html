@@ -356,6 +356,12 @@
 
     <!-- [js] START ------------------------------------------------------------------------------------------- -->
     <script>
+        xmlDownload.addEventListener('click', e => {
+            document.getElementById("xmlLoad").disabled = false;
+        })
+    </script>
+
+    <script>
         //경진 프레임 및 손모양 라벨링 선택시 저장버튼 활성화
         jQuery('#handpose').change(function() {
             var state = jQuery("#handpose option:selected").val();
@@ -406,6 +412,7 @@
             document.querySelector(".btn-danger").disabled = true;
             //경진
             document.querySelector(".btn-save").disabled = true;
+            document.getElementById("xmlLoad").disabled = true;
 
             alert("\"작업 순서\" : video, xml 다운로드 => video 업로드 => 작업 시작")
         });
@@ -713,7 +720,6 @@
 
      const final_complete = document.getElementById('final_complete')
      final_complete.addEventListener('click', e => {
-        alert("작업 내용이 최종 제출되었습니다.");
        $.ajax({
            url: "task_complete",
            type: "POST",
@@ -721,9 +727,16 @@
              task_num : document.getElementById('tasknumber').value,
              group: document.getElementById("groupId").value
            }),
-           success: function(){
-           window.location.assign('/mywork')
-           },
+           success: function(response){
+                if(response.message == 'notsuccess'){
+                    alert("작업 내용이 반려되었습니다.");
+                    window.location.assign('/mywork_record')
+                }
+                else{
+                    alert("작업 내용이 최종 제출되었습니다.");
+                    window.location.assign('/mywork')
+                }
+            },
            error: function(){
            // console.log('error')
            }

@@ -164,8 +164,11 @@ button{
 }
 
 .video-form{
-    position: relative;
+    /* position: relative; */
     overflow: hidden;
+    max-width: 800px;
+    z-index:5;
+    float: left;
 }
 
 .video-form video{
@@ -233,7 +236,7 @@ button{
 
 
 .input-begin-end > div{
-    width: 100%;   
+    width: 100%;
 }
 
 .input-begin-end > div:first-child{
@@ -242,7 +245,7 @@ button{
 
 .button-submit-delete{
     display: flex;
-  
+
 }
 
 .button-submit-delete button{
@@ -278,7 +281,7 @@ button{
 }
 @keyframes spin {
     0% {transform: rotate(0deg);}
-    100% {transform: rotate(360deg);} 
+    100% {transform: rotate(360deg);}
 }
 .hide {
     display:none;
@@ -288,7 +291,7 @@ button{
 .sets-container,
 .frames-container,
 .clips-container{
-  
+
     top: 8px;
     height: 675px;
     padding: 0px;
@@ -309,6 +312,7 @@ button{
 .clips-container #clips, .frames-container #frames {
   display:flex;
   flex-direction:row;
+  max-width: 600px;
 }
 
 .clips-container #clips video{
@@ -361,11 +365,13 @@ form {
 }
 
 #demo{
-  display: flex;
-  justify-content: center;
-  align-content: space-between;
+  /* display: flex; */
+  /* justify-content: start; */
+  /* align-content: space-between; */
   padding:3vh 0 0;
   /* max-height:630px; */
+  margin: 0 auto;
+  max-width: 1430px;
 }
 
 .work_board{

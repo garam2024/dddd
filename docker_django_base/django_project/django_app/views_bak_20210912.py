@@ -80,7 +80,7 @@ class adminIndex(TemplateView):
 
         if request.user.is_authenticated and is_superuser:
         
-            print('admin Index GET Activate')
+
 
             user_list = adminAdapter().getUserList(request)            
             self.res_dic['user_list'] = user_list

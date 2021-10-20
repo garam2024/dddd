@@ -81,8 +81,7 @@ class My_Task(TemplateView):
         get_user_name = UserAdapter().get_profile(request)
         self.res_dic['profile'] = get_user_name
 
-        print("전역변수 코드 테스트--------------------------------------------")
-        print(getattr(settings, 'GLOBAL_CODE', None))
+
 
         return render(request, self.template_name, self.res_dic)
 
@@ -103,7 +102,7 @@ def bring_memo(request):
 
     string = 'django_app_workhistory daw left outer join django_app_tasklist dat on daw.work_id = dat.work_id and daw.group_id = dat.group_id'
     bringMemo = sql.select_workList(string, dic, None, ['memo'], None)
-    print(bringMemo)
+
     # print(len(bringMemo))
     #
     # _messages: ''
@@ -151,7 +150,7 @@ def task_cancel_module(request, task_num):
 
         get_message = str(TaskInfoAdapter().task_cancel(request, task_num))
 
-        print("task_cancel_module Activate")
+
 
         if get_message == "True":
 
@@ -172,7 +171,7 @@ def inspect_cancel_module_1st(request, task_num):
 
         get_message = str(InspectAdapter_1st().inspect_cancel(request, task_num))
 
-        print("inspect_cancel_module_1st Activate")
+
 
         if get_message == "True":
 
@@ -192,7 +191,7 @@ def inspect_cancel_module_2nd(request, task_num):
 
         get_message = str(InspectAdapter_2nd().inspect_cancel(request, task_num))
 
-        print("inspect_cancel_module_2nd Activate")
+
 
         if get_message == "True":
 
@@ -212,7 +211,7 @@ def inspect_cancel_module_3rd(request, task_num):
 
         get_message = str(InspectAdapter_3rd().inspect_cancel(request, task_num))
 
-        print("inspect_cancel_module_3rd Activate")
+
 
         if get_message == "True":
 
@@ -239,13 +238,13 @@ def Re_Task_process(self, request, task_num, worktype):
     staff_permission = UserAdapter().get_is_staff(request)
 
     get_message = str(get_message)
-    print(get_message)
+
 
     res_dic ={}
 
     if staff_permission:
         if get_message == '4':
-            print("!!!!!!!!!!!!!!!!!4!!!!!!!!!!!!!!!!!!!!!!")
+
             task_info_list = TaskInfoAdapter().get_task_info(request, user_name, task_num)
             message_context = "Exists"
 
@@ -258,7 +257,7 @@ def Re_Task_process(self, request, task_num, worktype):
 
         elif get_message == '304':
 
-            print("작업은 1개씩만 할 수 있습니다.")
+
 
             messages.info(request, dbinfo.message["mes_inspect_max_1"])
 

@@ -89,7 +89,7 @@ class Inspect_process(TemplateView):
                 get_message = InspectAdapter_1st().change_db_info(request, user_name, task_num)
                 get_message = str(get_message)
 
-                print("message text : ", get_message)
+
 
                 if get_message == "304" :
                     
@@ -102,9 +102,7 @@ class Inspect_process(TemplateView):
                 get_message_2 = InspectAdapter_1st().rework_logic(request, user_name, task_num)
                 get_message_2 = str(get_message_2)
 
-                print("Change DB Data : ",get_message)
 
-                print("Rework Rogic : ", get_message_2)
 
                 
                 if get_message == 'True' and get_message_2 == '4':
@@ -353,8 +351,7 @@ def check_task(request, task_num, work_type):
     task_num = task_num
 
     task_db_list = getTaskInfo().task_db_select(user_name, task_num)
-    print("!!!!!!!!!!!!!!!!!!!!!!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@######################################")
-    print(task_db_list)
+
 
     return HttpResponse(json.dumps(task_db_list), content_type="application/json")
 

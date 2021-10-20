@@ -331,7 +331,7 @@
                                 <span>클립 삭제</span>
                             </button>
                         </div>
-                            <button type="button" class="btn btn-success" id="final_complete_inspect2">
+                            <button type="button" class="btn btn-success" id="final_complete">
                                 <i class="glyphicon-check"></i>&nbsp;
                                 <span>검수 완료</span>
                             </button>
@@ -604,7 +604,7 @@
                 console.log(store)
 
 
-                 // final_complete_inspect2 check
+                 // final_complete check
                  let completeCnt = 0
                 document.querySelectorAll('#sets').forEach(el => {
                     if(el.classList.contains('complete')){
@@ -614,7 +614,7 @@
                 var ele = document.getElementById('div_btn');
                 var eleCount = ele.childElementCount;
                 if(completeCnt == eleCount){
-                    document.getElementById("final_complete_inspect2").disabled = false;
+                    document.getElementById("final_complete").disabled = false;
                 }
             }
 
@@ -709,8 +709,8 @@
 <script>
     // let tknum = document.getElementById('tasknumber').value;
 
-     const final_complete_inspect2 = document.getElementById('final_complete_inspect2')
-     final_complete_inspect2.addEventListener('click', e => {
+     const final_complete = document.getElementById('final_complete')
+     final_complete.addEventListener('click', e => {
         alert("작업 내용이 최종 제출되었습니다.");
        $.ajax({
            url: "final_complete_inspect2",

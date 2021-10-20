@@ -285,15 +285,15 @@
      if (mode == '작업' || mode == '재작업') {
          // region create, move, resize
          wavesurfer.on('region-update-end', function (region) {
-            
+            console.log('업데이트 작동')
              resetRegionInfo(region)
+
              console.log("------------------------------")
              console.log("nowSet : " + nowSet[0])
              console.log("nowClip : " + nowClip[0])
              console.log("------------------------------")
  
              // disable final submit btn
-             document.querySelector(".btn-success").disabled = true;
          })
          wavesurfer.on('region-updated', saveRegions);
          wavesurfer.on('region-removed', saveRegions);
@@ -311,7 +311,8 @@
  
  
      function resetRegionInfo(region) {
- 
+        console.log('resetRegionInfo 작동')
+        console.log(region.id)
          // merge sptRegions
          let mergeSptRegions = []
          sptRegions.forEach(elm => {
@@ -524,6 +525,13 @@
              console.log("sptRegion[setNum].length == 0")
          }
          // console.log(sptRegions);
+         console.log(region.id)
+
+         return (function(region){
+            console.log('리셋 리전 셋 프레임스')
+             setFrames(region)
+            document.querySelector(".btn-success").disabled = true;
+         }(region))
      };
  
  
@@ -531,6 +539,11 @@
          // console.log(region)
          // console.log(region.id)
          // console.log(wavesurfer.regions.list)
+         //리전 수정 불가
+        console.log('region 드래그 불가')
+        region.drag = false
+        region.resize = false
+        console.log('수정')
      })
  
      // else {

@@ -71,10 +71,11 @@
             document.getElementById("note").disabled = true;
 
         }
-        setMarkInit()
-        chkFinalCmpl();
+        setTimeout(chkFinalCmpl, 2000)
         window.wavesurfer.clearMarkers();
         clearCanvas();
+        sortClip()
+        setMarkInit()
     }
 };
 
@@ -124,4 +125,22 @@ function chkFinalCmpl(){
       if(completeCnt == eleCount){
           document.getElementById("final_complete").disabled = false;
       }
+}
+
+function useDisable(boolean){
+    var array = []
+    array.push(document.querySelector('.btn-save'))
+    array.push(document.querySelector(".btn-success"))
+    array.push(document.getElementById("modelLoad"))
+    array.push(document.getElementById("modelReload"))
+    array.push(document.getElementById("handpose"))
+    array.push(document.getElementById("note"))
+    array.push(document.querySelector(".btn-danger"))
+    array.push(document.querySelector(".btn-danger"))
+
+    if(boolean){
+        array.foreach(arr => arr.disabled)
+    }else{
+        array.foreach(arr => arr.disabled = '')
+    }
 }

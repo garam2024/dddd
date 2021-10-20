@@ -107,7 +107,34 @@ function drawSkeleton(landmarks) {
 
     clearCanvas();
 
-    function makeCircle(text, left, top) {
+    // // origin makeCircle
+    // function makeCircle(text, left, top) {
+    //     var c = new fabric.Circle({
+    //         left: left,
+    //         top: top,
+    //         strokeWidth: 4,
+    //         radius: 7,
+    //         fill: '#fff',
+    //         stroke: '#666'
+    //     });
+
+    //     var circleText = new fabric.Text('' + text, {
+    //         fontSize: 22,
+    //         left: left,
+    //         top: top
+    //     });
+
+    //     var group = new fabric.Group([c, circleText], {});
+
+    //     group.hasControls = c.hasBorders = false;
+    //     return group;
+    // }
+
+
+    
+    // START 211012 동경
+
+    function makeCircle(text, left, top, line1, line2, line3) {
         var c = new fabric.Circle({
             left: left,
             top: top,
@@ -118,7 +145,7 @@ function drawSkeleton(landmarks) {
         });
 
         var circleText = new fabric.Text('' + text, {
-            fontSize: 22,
+            fontSize: 10,
             left: left,
             top: top
         });

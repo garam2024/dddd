@@ -201,6 +201,7 @@
         </div>
     </div>
 
+
     <!-- js -->
     <script src="{%static 'django_app/car_abnormal/js/trivia.js' %}"></script>
     <script src="{%static 'django_app/car_abnormal/js/imageLabeling.js' %}"></script>
@@ -208,6 +209,7 @@
     <script src="{%static 'django_app/car_abnormal/js/main.js' %}"></script>
     <script src="{%static 'django_app/car_abnormal/js/loadWave.js' %}"></script> {% endcomment %}
     <div id="demo">
+         <input type="hidden" id="work_status" value="{{task_info_list.work_status}}">
         <section id="clipList" style="display:block;">
             <h2>클립 영역</h2>
             <div id="clips">

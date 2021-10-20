@@ -150,57 +150,65 @@ class sqlMethod:
             if selid == sqlInfo[1]:
                 sqlStr = selObj.text
                 break
-        print("sql-->%s" %sqlStr )
+
         return sqlStr
 
     # sqlMappid  : xml파일명.수행아이디
     # Mabatis (차후 psycopg2를 Mabatis로 변경할 것)
     # sqlMapperid : filename.(select, update, delete IdName)
-    def get_select(self,sqlMapperid=None, parameter=None):
-        sqlStr = self.getSql(sqlMapperid,"select")
+    def get_select(self, sqlMapperid=None, parameter=None):
+        sqlStr = self.getSql(sqlMapperid, "select")
 
-        if sqlStr =="":
+        if sqlStr == "":
             raise ConnectionError("not Query parse error: %s" % sqlMapperid)
 
-        #변수 파싱
+        # 변수 파싱
         for key in parameter:
             findStr = ("#{%s}" % key)
             while sqlStr.find(findStr) > -1:
-                sqlStr = sqlStr.replace( findStr, "'"+parameter[key]+"'")
+                sqlStr = sqlStr.replace(findStr, parameter[key])
 
-        while (sqlStr.find('[if test="')>-1) :
+        while (sqlStr.find('[if test="') > -1):
             start_porint = sqlStr.find('[if test="')
-            ifStrEnd     =  sqlStr.find('"]')
+            ifStrEnd = sqlStr.find('"]')
             end_point = sqlStr.find("[/if]")
 
             ifStr = sqlStr[start_porint + 10:ifStrEnd]  # <if test=' <--위치를 찾는다
 
-            ifTrueStr = sqlStr[ifStrEnd + 3 : end_point]
+            ifTrueStr = sqlStr[ifStrEnd + 3: end_point]
 
+            sqlStrStart_Str = sqlStr[:start_porint]
+            sqlStrend_str = sqlStr[end_point + 6:]
 
+            if ifStr.find(" and ") > 0:  # and 연산자 처리
+                ifStrArr = ifStr.split(" and ")
+            else:
+                ifStrArr = ifStr.split("((")
 
-            sqlStrStart_Str    = sqlStr[:start_porint]
-            sqlStrend_str      = sqlStr[end_point + 6:]
+            ifpro = "N"
+            for ifStr in ifStrArr:
+                if ifStr.find("==") > 0:
+                    ifStrArr = ifStr.split("==")
+                    print("%s == %s" % (parameter[ifStrArr[0].strip()], ifStrArr[1].strip()))
 
-            ifpro ="N"
-            if ifStr.find("==")>0:
-                ifStrArr = ifStr.split("==")
-                print("%s == %s" % (parameter[ifStrArr[0].strip()], ifStrArr[1].strip()))
+                    if "'"+parameter[ifStrArr[0].strip()]+"'" == ifStrArr[1].strip().replace("''", ""):
+                        ifpro = "Y"
+                    else:
+                        ifpro = "N"
 
-                if parameter[ifStrArr[0].strip()] == ifStrArr[1].strip():
-                    sqlStr = sqlStrStart_Str + ifTrueStr + sqlStrend_str
-                    ifpro = "Y"
+                if ifStr.find("!=") > 0:
+                    ifStrArr = ifStr.split("!=")
+                    print("%s != %s" % (parameter[ifStrArr[0].strip()], ifStrArr[1].strip()))
 
-            if ifStr.find("!=") > 0:
-                ifStrArr = ifStr.split("!=")
-                print("%s != %s" % (parameter[ifStrArr[0].strip()], ifStrArr[1].strip()))
-
-                if parameter[ifStrArr[0].strip()] != ifStrArr[1].strip():
-                    sqlStr = sqlStrStart_Str + ifTrueStr + sqlStrend_str
-                    ifpro = "Y"
+                    if "'"+parameter[ifStrArr[0].strip()]+"'" != ifStrArr[1].strip().replace("''", ""):
+                        ifpro = "Y"
+                    else:
+                        ifpro = "N"
 
             if ifpro =="N" :  # if값이 참이 아니면
                 sqlStr = sqlStrStart_Str + sqlStrend_str
+            else:
+                sqlStr = sqlStrStart_Str + ifTrueStr + sqlStrend_str
 
         #sql 실행
         print(sqlStr)

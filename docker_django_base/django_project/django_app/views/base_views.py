@@ -41,11 +41,16 @@ from ..Controller.getTaskInfo import *
 from ..Controller.InspectAdapter_1st import *
 from ..Controller.InspectAdapter_2nd import *
 from ..Controller.InspectAdapter_3rd import *
-from ..Controller.adminAdapter import * 
+from ..Controller.adminAdapter import *
+from ..Controller.Pagination import *
 
 from datetime import datetime
 from db_info import dbinfo
 from django.http import JsonResponse
+
+
+
+
 
 URL_LOGIN = 'index'
 decorators = [csrf_exempt, login_required(login_url=URL_LOGIN)]
@@ -123,6 +128,7 @@ class Main(TemplateView):
         get_user_name = UserAdapter().get_profile(request)
         get_info_check = str(UserAdapter().get_profile(request))
 
+
         if get_info_check == 'False':
 
             return redirect('index')
@@ -184,14 +190,14 @@ def sig_user_logged_in(sender, user, request, **kwargs):
 def duplicateCheck(request):
 
     nid=request.POST.get('nid')
-    user_list=User.objects.all()
+    a = sqlMethod()
+    user_list = a.select_workList(table_name="django_app_profile",data_dic={},column_list={'account_id'})
+    a.close()
     message=1
-    
-    for user in user_list:
-        if(nid==user.username and nid !=""):
-            message=0
+    account_list = [i["account_id"] for i in user_list]
+    if(nid in account_list and nid !=""):
+        message=0
     ret={"message":message}
-
     return HttpResponse(json.dumps(ret), content_type="application/json")
 
 
@@ -200,18 +206,21 @@ def duplicateCheck(request):
 def Register_module(request):
 
     if request.method == "POST":
-        print("Register_Form Activate")
+        print("Register_Module Activate")
 
         nid = request.POST.get("nid", "")
+        print("nid", nid)
         npw = request.POST.get("npw", "")
         nemail = request.POST.get("nemail", "")
         ngroup = request.POST.get("ngroup", "")
         nphone = request.POST.get("nphone", "")
         nname = request.POST.get("nname", "")
 
+
+
         user=User.objects.create_user(nid, nemail, npw)
         # create_superuser 파라미터 동일
-        # user.save()
+        user.save()
 
         profile=Profile.objects.get(user=user)
         profile.set_info(nid, npw, nname, nphone, nemail, ngroup)
@@ -399,11 +408,9 @@ class Work_list(TemplateView):
         self.res_dic = {}
 
     def get(self, request, *args, **kwargs):
+
         work_table_list = TaskAdapter().get_normal_work_list(request)
-
-        print(work_table_list)
-
-        self.res_dic['work_list'] = work_table_list
+        self.res_dic['page_range'], self.res_dic['work_list'] = Pagination().PaginatorManager(request, work_table_list)
 
         get_user_name = UserAdapter().get_profile(request)
         self.res_dic['profile'] = get_user_name
@@ -549,16 +556,5 @@ class interface_guide_list(TemplateView):
 
 @method_decorator(csrf_exempt, name='dispatch')
 def get_statusDic(request):
-
-
-    # result = dbinfo.status["statusAll"]
-    result_dic = dbinfo.status["statusAll"]
-
-    # for codeRow in result_dic:
-    #     print("=====================%s" % codeRow)
-    #     print("%s=%s" % (codeRow["program_var_nm"], codeRow["code_id"]))
-    #     dbinfo.status[codeRow["program_var_nm"]] = codeRow["code_id"]
-    #     dbinfo.message[codeRow["program_var_nm"]] = codeRow["code_nm"]
-    # result = dbinfo.status
     result = dbinfo.status
     return JsonResponse(result, safe = False)

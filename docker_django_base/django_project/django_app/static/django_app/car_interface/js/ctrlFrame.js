@@ -18,10 +18,12 @@ frames.addEventListener('click', function (e) {
     var frameNo = 0;
     for (frameNo = 0; frameNo < frames.children.length; frameNo++) {
         if (frames.children[frameNo] === e.target) {
+            console.log(frames.children[frameNo])
+            console.log(e.target)
             break
         }
     }
-    
+    console.log(frameNo)
     // 프레임 클릭하면 hand pose coord 저장
     saveSkeleton();
 
@@ -60,7 +62,7 @@ function createFrames(region, frameList) {
     let key = region.id;
     let value = frameList;
 
-    // console.log(frames)
+     console.log(region.id)
     frames.dataset.regionId = region.id
     frames.innerHTML = '';
     for (let i = 0; i < value.length; i++) {
@@ -101,15 +103,17 @@ async function setFrames(region) {
     // 결과 frameList 배열 변수 생성
     var frameList = []
     var dataURL = '';
+    console.log(region)
 
     // Parameter region으로부터 start, end 변수 생성
     var start = region.start;
     var end = region.end;
     var count = 0
     
-    let wait = () => {   
+    let wait = (region) => {
         let innerFunc = () => {
             if (count > 4) return (function () {  // 프레임 5개가 모두 생성됐다.
+                console.log(region)
                 if (!clipInfo.has(region.id) || clipInfo.get(region.id).length == 0) {  
                     //clipInfo가 영역 정보가 없다.
                     clipInfo.set(region.id, frameList)
@@ -147,8 +151,7 @@ async function setFrames(region) {
         // }
     }
 
-    wait()
-
+    return wait(region)
 }
 
 async function showFrame(region, frameNum, frameList) {
@@ -193,6 +196,8 @@ async function showFrame(region, frameNum, frameList) {
         } else {
             drawSkeleton(frameSkeleton);
         }
+
+//        wrapper(frameSkeleton, region, frameNum, frameDataURL)
     }, { once: true })
 
     // 프레임을 보여주면서 작업한 프레임으로 번호 기억

@@ -69,6 +69,7 @@
 
     <input type="hidden" id="tasknumber" value="{{task_info_list.work_id}}">
     <input type="hidden" id="groupId" value="{{task_info_list.group_id}}">
+     <input type="hidden" id="work_status" value="{{task_info_list.work_status}}">
 
      <div id="demo">
     <section id="clipList" style="display:block;">
@@ -253,7 +254,7 @@
                 }
 
                 $.ajax({
-                    url: "task_complete",
+                    url: "final_complete_inspect2",
                     type: "POST",
                     data: JSON.stringify(param),
                     success: function () {
