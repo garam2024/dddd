@@ -158,13 +158,43 @@ class UserAdapter:
                                                                 status_list=None, column_list=column_list)
             sql_query.close()
 
-            print(type(profile_inspector_check))
+            print(profile_inspector_check)
 
             return profile_inspector_check[0]
 
         except:
 
             print("group_id 가져오기 실패")
+
+            return False
+            raise
+
+    def get_code_mst(self, request):
+        try:
+            sql_query = sqlMethod()
+
+            column_list = {
+                "code_nm",
+                "program_var_nm",
+                "code_id"
+            }
+
+            profile_dic = {
+                "parent_id": 'status'
+            }
+
+            code_mst = sql_query.select_workList(table_name="django_app_code_mst", data_dic=profile_dic,
+                                                                status_list=None, column_list=column_list)
+            sql_query.close()
+
+            print(type(code_mst))
+            print(code_mst)
+
+            return code_mst
+
+        except:
+
+            print("code_mst 가져오기 실패")
 
             return False
             raise

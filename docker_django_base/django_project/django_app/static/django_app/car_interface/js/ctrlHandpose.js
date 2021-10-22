@@ -92,7 +92,17 @@ async function modelLoad() {
         loadCount++;
     }
 
-    statusWorking()// 클립의 상태가 반려, 완료가 아닐 떄 작업중으로 만듬
+    var attributesNum = document.querySelector('#attributes').value
+    console.log(attributesNum)
+
+    saveSkeleton().
+    then(
+        resolve => {
+            statusWorking()
+        }
+    ).catch(
+        err => {throw new Error(err)}
+    )
 }
 
 
@@ -184,7 +194,7 @@ canvas.on('object:moved', function (event) {
 });
 
 
-function saveSkeleton() {
+async function saveSkeleton() {
 
     var imageAlt = imgElement.getAttribute('alt');  // e.g. "wavesurfer_e1742v3euh^3"
     if (imageAlt != null) {
@@ -205,7 +215,23 @@ function saveSkeleton() {
         if(frameList.length != 0){
             frameList[imageInfo[1]].skeleton = landmarks;
         }
-        clipInfo.set(imageInfo[0], frameList);
+        console.log('클립 인포')
+
+        var attributesNum = document.querySelector('#attributes').value
+        var selectRegion
+
+        for(let key in wavesurfer.regions.list){
+            if(wavesurfer.regions.list[key].attributes == attributesNum){
+                selectRegion = wavesurfer.regions.list[key]
+                break
+            }
+            console.log(wavesurfer.regions.list[key].attributes)
+        }
+
+        console.log(selectRegion)
+        clipInfo.set(imageInfo[0], frameList)
+        selectRegion.data.skeleton = clipInfo.get(selectRegion.id)
+
     }
 }
 

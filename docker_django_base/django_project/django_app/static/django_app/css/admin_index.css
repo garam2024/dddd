@@ -22,8 +22,13 @@
     color: #252c41;
 }
 
-.admin-page .work-progress{
+.admin-page .work-progress,
+.admin-page .first-table{
     margin-bottom: 32px;
+}
+
+.admin-page .first-table{
+    display: grid;
 }
 
 .admin-page section{
@@ -74,7 +79,7 @@ input.button{
 .admin-page tbody tr td:hover{
     cursor: pointer;
 }
-
+.admin-page .first-table tr,
 .admin-page .selected-product ul,
 .admin-page .work-progress ul{
     display: flex;
@@ -88,6 +93,7 @@ input.button{
     margin-bottom: 0;
 }
 
+.admin-page .first-table tr td,
 .admin-page .work-progress ul li,
 .admin-page .selected-product ul li,
 .admin-page .selected-workman ul li{
@@ -97,18 +103,21 @@ input.button{
     border: 1px solid #ddd;
 }
 
+.admin-page .first-table tr td:nth-child(odd),
 .admin-page .selected-product ul li:nth-child(odd),
 .admin-page .selected-workman ul li:nth-child(odd),
 .admin-page .work-progress ul li:nth-child(odd){
     background-color: #f9f9f9;
 }
 
+.admin-page .first-table tr td:nth-child(n + 2),
 .admin-page .selected-product ul li:nth-child(n + 2),
 .admin-page .selected-workman ul li:nth-child(n + 2),
 .admin-page .work-progress ul li:nth-child(n + 2){
     border-left: none;
 }
 
+.admin-page .first-table tr td:nth-child(n + 2) tr,
 .admin-page .selected-product ul:nth-child(n + 2) li,
 .admin-page .selected-workman ul:nth-child(n + 2) li,
 .admin-page .work-progress ul:nth-child(n + 2) li{
@@ -248,6 +257,7 @@ input.button{
 
 .condition .date input{
    margin-left: 4px;
+   width: auto;
 }
 
 .search{
@@ -260,6 +270,7 @@ input.button{
     justify-content: center;
     align-items: center;
 }
+
 
 
 
@@ -328,3 +339,18 @@ input.button{
   border-top: 10px solid transparent;
   border-bottom: 10px solid transparent;
   border-right:10px solid blue; }
+
+ #excel_save {
+    background-color : green;
+    border-radius : 10%;
+    color: #FFFFFF;
+    width: max-content;
+  }
+
+.admin-table thead tr{
+   position:sticky;
+   top:0px;
+   background-color:white;
+   /* border-bottom:1px solid gray; */
+  box-shadow:1px 1px 1px 1px #e9e9e9
+}

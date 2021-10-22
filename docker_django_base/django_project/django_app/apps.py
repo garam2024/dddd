@@ -6,7 +6,6 @@ from django.conf import settings
 class DjangoAppConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'django_app'
-# jjdd
 
 class StartupAppConfig(AppConfig):
     name = 'django_app'

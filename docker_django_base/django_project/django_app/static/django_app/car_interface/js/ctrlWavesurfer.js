@@ -3,11 +3,24 @@
  **/
  var wavesurfer;
 
+var createNum = function(list){
+  var number = []
+  console.log(list)
+  if(Object.keys(list).length === 0) return 0
+  for(let key in list){
+    console.log(list[`${key}`].attributes)
+    number.push(parseInt(list[`${key}`].attributes))
+  }
+    console.log(Math.max(...number) + 1)
+  return Math.max(...number) + 1
+}
+
  /**
   * 비디오 로딩
   */
  // document.addEventListener('DOMContentLoaded', function loadVideo() {
  function loadVideo(jsonFile, modeSelect) {
+
      console.log('비디오 로드 작동')
      window.mode = modeSelect;
      // console.log(modeSelect)
@@ -52,11 +65,13 @@
      });
  
      wavesurfer.load(mediaElt);
- 
+
+
      // 저장된 JSON 정보 불러오기
      wavesurfer.on('ready', function () {
          console.log('ready 작동')
- 
+         task_id = createNum(wavesurfer.regions.list)
+         console.log(task_id)
          wavesurfer.enableDragSelection({
              // color: randomColor(0.25),
              slop: 1,
@@ -275,8 +290,9 @@
                      region.play();
                  }, 2000);
              }
- 
-             regionPlay();
+
+             //211020
+             // regionPlay();
          }
      });
  
@@ -286,13 +302,15 @@
          // region create, move, resize
          wavesurfer.on('region-update-end', function (region) {
             console.log('업데이트 작동')
+             if(regionOver(region)) return
              resetRegionInfo(region)
 
              console.log("------------------------------")
              console.log("nowSet : " + nowSet[0])
              console.log("nowClip : " + nowClip[0])
              console.log("------------------------------")
- 
+
+
              // disable final submit btn
          })
          wavesurfer.on('region-updated', saveRegions);
@@ -348,7 +366,8 @@
  
          if (!checkInRegionTag) { // if create region
              // 생성한 region에는 attributes, note, handpose, skeleton 값이 없으므로 설정
-             region.attributes = 0
+             region.attributes = task_id
+             task_id++
              region.data = {
                  "note": "",
                  "handpose": "",
@@ -375,7 +394,7 @@
  
          for (var k = 0; k < array.length; k++) {
              // set the attributes value of region order by acending
-             array[k].attributes = k;
+             // array[k].attributes = k;
              // console.log("array k attributes-------------------------------")
              // console.log(array[k].attributes)
  
@@ -469,15 +488,16 @@
                  loader.classList.toggle("hide");
              }, 800);
  
- 
+
+             //211020
              // img#tmpImage -> imgElement "alt" -> imageAlt.split("^")[0] -> if clipInfo.has(regionId) -> saveSkeleton
-             var imageAlt = imgElement.getAttribute('alt');
-             if (imageAlt != null) {
-                 var imageInfo = imgElement.getAttribute('alt').split("^");
-                 if (clipInfo.has(imageInfo[0])) {
-                     saveSkeleton();
-                 }
-             }
+             // var imageAlt = imgElement.getAttribute('alt');
+             // if (imageAlt != null) {
+             //     var imageInfo = imgElement.getAttribute('alt').split("^");
+             //     if (clipInfo.has(imageInfo[0])) {
+             //         saveSkeleton();
+             //     }
+             // }
  
  
              // set now clipNum value to nowClip
@@ -528,10 +548,13 @@
          console.log(region.id)
 
          return (function(region){
-            console.log('리셋 리전 셋 프레임스')
+            console.log('리셋 리전 셋 프레임스' , region.id)
              setFrames(region)
             document.querySelector(".btn-success").disabled = true;
+
          }(region))
+
+
      };
  
  
@@ -543,7 +566,6 @@
         console.log('region 드래그 불가')
         region.drag = false
         region.resize = false
-        console.log('수정')
      })
  
      // else {
@@ -676,14 +698,16 @@
   *  addRegion, new clipInfo, createClip, sortClip with 'sptRegions[setNum][clipNum]'
   */
  function loadOneRegion(elm, isNowClip) {
-     // console.log("loadRegions--------------------------")
-     // console.log(elm)
+//      console.log("loadRegions--------------------------")
+//      console.log(elm)
+//      console.log(isNowClip)
      let tmpFramelist = [];
      // elm.color = randomColor(0.25);
-     if (elm.data.skeleton.length > 0) {
+     if (elm.data.skeleton && elm.data.skeleton.length > 0) { //
          tmpFramelist = elm.data.skeleton
      }
- 
+
+
      // add region to wavesurfer
      // var newRegion = wavesurfer.addRegion(elm);
  
@@ -734,3 +758,35 @@
          }
      }
  });
+
+
+function regionOver(region) {
+    let regionId = region.id;
+    let startList = [];
+    let endList = [];
+
+    for (var key in wavesurfer.regions.list) {
+        startList.push(wavesurfer.regions.list[key].start);
+        endList.push(wavesurfer.regions.list[key].end);
+    }
+    startList = startList.sort(function (a, b) {
+        return a - b;
+    });;
+    endList = endList.sort(function (a, b) {
+        return a - b;
+    });;
+    let currntNum = startList.findIndex((e) => e === region.start);
+    let backRegionEnd = endList[currntNum - 1];
+    let nextRegionStart = startList[currntNum + 1];
+
+    if (region.end > nextRegionStart || region.start < backRegionEnd) {
+        if(wavesurfer.regions.list[regionId]){
+            wavesurfer.regions.list[regionId].remove();
+        }
+
+        alert('구간설정 중복은 불가능 합니다.')
+        return true
+    }
+
+    return false
+}

@@ -158,6 +158,8 @@ function drawSkeleton(landmarks) {
     }
 
     canvas.renderAll();
+
+
 }
 
 
@@ -187,7 +189,8 @@ function saveSkeleton() {
         if(frameList.length != 0){
             frameList[imageInfo[1]].skeleton = landmarks;
         }
-        clipInfo.set(imageInfo[0], frameList);
+        console.log('클립 인포')
+        console.log(clipInfo.set(imageInfo[0], frameList));
     }
 }
 

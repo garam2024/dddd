@@ -94,11 +94,6 @@
 
             </div>
 
-
-
-
-
-
             <div class="tab">
                 <h3>작업 현황</h3>
                 <div class="tab-table">
@@ -114,30 +109,17 @@
 <!--                                    작업 종류 :-->
                                     <select id="workType" name="workType" class="form-control">
                                         <option value="">작업종류</option>
-                                        <option value="인터페이스">인터페이스</option>
-                                        <option value="이상행동">이상행동</option>
+                                        <option value="interface">인터페이스</option>
+                                        <option value="normal">이상행동</option>
                                     </select>
                                 </div>
                                 <div class="condition">
 <!--                                    작업 상태 :-->
                                     <select id="workStatus" name="workStatus" class="form-control">
                                         <option value="">작업상태</option>
-                                        <option value="{{dbinfostatus.status_work_deagi}}">작업대기</option>
-                                        <option value="{{dbinfostatus.status_work_run}}">작업진행</option>
-                                        <option value="{{dbinfostatus.status_1cha_inspect_deagi}}">1차 검수 대기</option>
-                                        <option value="{{dbinfostatus.status_1cha_inspect_run}}">1차 검수 진행</option>
-                                        <option value="{{dbinfostatus.status_2cha_inspect_deagi}}">2차 검수 대기</option>
-                                        <option value="{{dbinfostatus.status_2cha_inspect_run}}">2차 검수 진행</option>
-                                        <option value="{{dbinfostatus.status_3cha_inspect_deagi}}">3차 검수 대기</option>
-                                        <option value="{{dbinfostatus.status_3cha_inspect_run}}">3차 검수 진행</option>
-                                        <option value="{{dbinfostatus.status_complet}}">작업완료</option>
-                                        <option value="{{dbinfostatus.status_1cha_companion_return}}">1차 검수 반려</option>
-                                        <option value="{{dbinfostatus.status_2cha_companion_return}}">2차 검수 반려</option>
-                                        <option value="{{dbinfostatus.status_3cha_companion_return}}">3차 검수 반려</option>
-                                        <option value="{{dbinfostatus.status_1cha_companion_cansel}}">1차 검수 취소</option>
-                                        <option value="{{dbinfostatus.status_2cha_companion_cansel}}">2차 검수 취소</option>
-                                        <option value="{{dbinfostatus.status_3cha_companion_cansel}}">3차 검수 취소</option>
-                                        <option value="{{dbinfostatus.status_job_cansel}}">작업취소</option>
+                                        {% for status in dbinfostatus %}
+                                            <option value="{{status.code_id}}">{{status.code_nm}}</option>
+                                        {% endfor %}
                                     </select>
                                 </div>
                                 <div class="condition">
@@ -362,7 +344,7 @@
         <input name="work_id" value="">
         <input name="work_type" value="">
         <input name="work_status" value="">
-    </form>>
+    </form>
     <script>
 
 

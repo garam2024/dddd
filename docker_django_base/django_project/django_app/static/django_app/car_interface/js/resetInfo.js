@@ -28,7 +28,11 @@
                 data : JSON.stringify(param),
                 success : function(data){
                     console.log('Success');
-                    console.log(data)
+                    setTimeout(chkFinalCmpl, 2000)
+                    window.wavesurfer.clearMarkers();
+                    clearCanvas();
+                    sortClip()
+                    setMarkInit()
                 },
                 error : function(e){
                     console.log('Error');
@@ -71,11 +75,6 @@
             document.getElementById("note").disabled = true;
 
         }
-        setTimeout(chkFinalCmpl, 2000)
-        window.wavesurfer.clearMarkers();
-        clearCanvas();
-        sortClip()
-        setMarkInit()
     }
 };
 

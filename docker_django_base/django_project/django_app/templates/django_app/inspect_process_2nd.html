@@ -1,76 +1,8 @@
 <!DOCTYPE html>
 {% load static %}
 <html>
-
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- favicon -->
-    <link rel="shortcut icon" href="#">
-
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"> <!-- CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
-    <!-- 테마 -->
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet"> <!-- 자바스크립트 -->
-
-    <!-- stylesheet -->
-    <link rel="stylesheet" href="{%static 'django_app/car_interface/css/style.css' %}" />
-    <!-- <link rel="stylesheet"  href="{%static 'django_app/car_interface/css/style2.css' %}" /> -->
-    <link rel="stylesheet" href="{%static 'django_app/car_interface/css/ribbon.css' %}" />
-
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
-
-    <!-- wavesurfer -->
-    <script src="https://unpkg.com/wavesurfer.js/dist/wavesurfer.js"></script>
-    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.timeline.js"></script> <!-- timeline plugin -->
-    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.regions.js"></script> <!-- regions plugin -->
-    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.minimap.js"></script> <!-- minimap plugin -->
-    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.cursor.js"></script> <!-- cursor plugin -->
-    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.markers.js"></script> <!-- markers plugin -->
-    <link rel="screenshot" itemprop="screenshot"
-        href="https://katspaugh.github.io/wavesurfer.js/example/screenshot.png" /> <!-- example img -->
-
-    <!-- fabric -->
-    <script>
-        (function () {
-            var fabricUrl = "{%static 'django_app/car_interface/lib/fabric.js' %}";
-            if (document.location.search.indexOf('load_fabric_from=') > -1) {
-                var match = document.location.search.match(/load_fabric_from=([^&]*)/);
-                if (match && match[1]) {
-                    fabricUrl = match[1];
-                }
-            }
-            document.write('<script src="' + fabricUrl + '"><\/script>');
-        })();
-    </script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
-
-    <!-- hand pose -->
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
-
-    <!-- xml2json -->
-    <script type="text/javascript" src="{%static 'django_app/car_interface/lib/xml2json.js' %}"></script>
-
-    <!-- zip file download -->
-    <script async type="text/javascript" src="{%static 'django_app/car_interface/lib/jszip.min.js' %}" charset="utf-8">
-    </script>
-    <script async type="text/javascript" src="{%static 'django_app/car_interface/lib/FileSaver.min.js' %}"
-        charset="utf-8"></script>
-    <script async type="text/javascript" charset="utf-8"></script>
-
-    <!-- google analytics -->
-    <script src="{%static 'django_app/car_interface/lib/master.js' %}"></script>
-    <!-- [lib] END ------------------------------------------------------------------------------------------- -->
-
+{% include 'django_app/include/interface_head.html' %}
 <body itemscope itemtype="http://schema.org/WebApplication">
     <!-- <div class="page-loading">
       <div class="message">
@@ -643,23 +575,7 @@
 
         //selectedCheck()
     </script>
-
-
-    <script src="{%static 'django_app/car_interface/js/loadXml.js' %}"></script>
-
-    <script src="{%static 'django_app/car_interface/js/ctrlCanvas.js' %}"></script>
-    <script src="{%static 'django_app/car_interface/js/ctrlWavesurfer.js' %}"></script>
-
-    <script src="{%static 'django_app/car_interface/js/ctrlSetBtn.js' %}"></script>
-    <script src="{%static 'django_app/car_interface/js/ctrlLabelForm.js' %}"></script>
-    <script src="{%static 'django_app/car_interface/js/ctrlClip.js' %}"></script>
-    <script src="{%static 'django_app/car_interface/js/ctrlFrame.js' %}"></script>
-    <script src="{%static 'django_app/car_interface/js/ctrlHandpose.js' %}"></script>
-
-    <script src="{%static 'django_app/car_interface/js/resetInfo.js' %}"></script>
-    <script src="{%static 'django_app/car_interface/js/exportJson.js' %}"></script>
-    <script src="{%static 'django_app/car_interface/js/scWavesurfer.js' %}"></script>
-
+    {% include 'django_app/include/interface_foot_script.html' %}
     <!-- 푸터 -->
     <footer class="container-fluid footer">
       <div class="footer_container">

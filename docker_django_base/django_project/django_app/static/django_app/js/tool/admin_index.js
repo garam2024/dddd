@@ -1,5 +1,8 @@
 let currentPage = 0;
 
+
+if (window.location.pathname == '/admin/index/'){
+
 $.ajax({
     type:'POST',
     url : '/admin/index/get_statusDic',
@@ -64,18 +67,30 @@ SortTable.prototype.sorting = function(n){
 const tableTab01 = new SortTable('#table-tab-01')
 const tableTab02 = new SortTable('#table-tab-02')
 
+if (window.location.pathname == '/admin/index/'){
 const tableSortingButton01 = document.querySelector('#table-tab-01 thead tr')
 tableSortingButton01.addEventListener('click', function(e){
     if(!e.target.dataset.number) return
     tableTab01.sorting(e.target.dataset.number)
 })
-
+}
+else {
 const tableSortingButton02 = document.querySelector('#table-tab-02 thead tr')
 tableSortingButton02.addEventListener('click', function(e){
     if(!e.target.dataset.number) return
     tableTab02.sorting(e.target.dataset.number)
 })
+}
 
+
+
+
+
+
+
+
+
+if (window.location.pathname == '/admin/index/'){
 function Tabmenu(tabEl, btnEl){
     this.tabEl = tabEl
     this.btnEl = btnEl
@@ -113,145 +128,17 @@ Tabmenu.prototype.init = function(){
 
     activeTab = _tabEl[0]
     activeBtn = _btnEl[0]
-    
+
     this.showTab(activeBtn, activeTab)
 }
 
 const tabmenu = new Tabmenu('.tab', '.side-nav button')
 
 tabmenu.init()
-//프로토 타입은 변수 공유 안하나? <- 구조 분해 할당은 담아서 쓰는 건지
-//디스 값 변경을 하지 않는듯(?)
-
-const searchTable = document.querySelector('#table-tab-01')
-
-searchTable.addEventListener('click', (e) => {
-    let { target } = e
-    if(target.nodeName !== 'BUTTON') return
-    if(target.dataset.search !== 'product') return
-    
-    var productName = e.target.innerText
-    console.log(productName)
-    if(target.dataset.search){
-        console.log(target.dataset.search)
-        $.ajax({
-            type: 'post',
-            url: 'product_data',
-            data : {'product': productName },
-
-            success: function(data){
-                const _productName = document.querySelector('#ProductName'),
-                workStatus = document.querySelector('#workStatus'),
-                worker = document.querySelector('#worker'),
-                inspectionStatus = document.querySelector('#inspectionStatus'),
-                inspecter = document.querySelector('#inspecter')
-
-                console.log(data)
-                console.log('Success: ' + data.tasker_id)
-                console.log('Success: ' + data.inspector_id)
-                console.log('Success: ' + data.task_process)
-                console.log('Success: ' + data.inspect_process)
-
-                _productName.innerText = productName
-                workStatus.innerText = data.task_process
-                worker.innerText = data.tasker_id
-                inspectionStatus.innerText = data.inspect_process
-                inspecter.innerText = data.inspector_id
-
-                // showData(target.dataset.search, data)
-            },
-            error: function(err){
-                console.log(err)
-            }
-        })
-    }
-})
-
-
-function showData(search, data){
-
-    switch(search){
-        case 'product':
-            const productEl = document.querySelectorAll('.selected-product ul')[1]
-
-            data.forEach(data => {
-                const li = document.createElement('li')
-                li.append(data)
-                productEl.append(li)
-            })
-        
-        break
-
-        case 'worker':
-            const workerEl = document.querySelectorAll(`.selected-workman ul`)[1]
-
-            data.forEach(data => {
-                const li = document.createElement('li')
-                li.append(data)
-                workerEl.append(li)
-            })
-
-        // default: 
-    }
 }
+else {}
 
-const inputChangeCheck = document.querySelector('#inputChangeCheck')
-const inputChangeTr = document.querySelectorAll('#inputChangeCheck tr')
-const inputChangeBtn = document.querySelectorAll('#inputChangeCheck tr .save-value')
 
-inputChangeCheck.addEventListener('click', function(e){
-    if(e.target.className.indexOf('save-value') !== -1){
-        e.preventDefault()
-        let value = []
-        // let tr = document.querySelector(e.target.parentNode)
-        for(let i=0; i<inputChangeBtn.length; i++){
-            if(e.target === inputChangeBtn[i]){
-                for(let j=0; j<inputChangeTr[i].children.length; j++){
-                    if(inputChangeTr[i].children[j].querySelector('input')){
-                        if(inputChangeTr[i].children[j].querySelector('input[type="checkbox"]')){
-                            value.push(inputChangeTr[i].children[j].querySelector('input').checked)
-                        }else{
-                            value.push(inputChangeTr[i].children[j].querySelector('input').value)
-                        }
-                    }
-                }
-            }
-        }
-
-        var param = {
-            worker: value[0],
-            worker_id: value[1],
-            workAuth: value[2],
-            inspectAuth: value[3],
-            adminAuth: value[4]
-        }
-
-        $.ajax({
-            type: 'post',
-            url: 'change_auth',
-            data : JSON.stringify(param),
-            success: function(data){
-                if(data === 'True'){
-                    alert('저장 성공')
-                }else{
-                    alert('저장 실패')
-                }
-            },
-            error: function(err){
-                alert('저장 실패')
-            }
-        })
-    }
-})
-
-let searchData = {
-    workerNm: '',
-    workType: '',
-    workStatus: '',
-    searchBgn: '',
-    searchEnd: '',
-    groupId: ''
-}
 
 var searchForm = document.forms.searchForm
 
@@ -404,139 +291,125 @@ function userByStatus(status){
 }
 
 function paging(page){
+
     $(".paging").empty();
     let tot_cnt = $("#postLength").val();
     console.log(tot_cnt)
     let pageSize = 10;
+    //가장 큰 수를 반환
     let pageTotNum = Math.floor(tot_cnt/pageSize) + (tot_cnt%pageSize > 0 ? 1 : 0);
     let pageStr = "<ul class = \"pageTable start\">";
     let startPage = Math.floor(page/pageSize);
     startPage = startPage*pageSize;
     let endPage = startPage + pageSize;
     endPage = endPage > pageTotNum ? pageTotNum : endPage;
+    let prevPageSet = ((Math.floor(page/pageSize)*pageSize)-1) >= 0 ? ((Math.floor(page/pageSize)*pageSize)-1) : page;
+    let nextPageSet = (Math.floor((page+pageSize)/pageSize)*pageSize) >= pageTotNum ? (pageTotNum - 1) : (Math.floor((page+pageSize)/pageSize)*pageSize);
+    let prevPage = (page - 1) >= 0 ? (page - 1) : page;
+    let nextPage = (page + 1) >= pageTotNum ? (pageTotNum - 1) : (page + 1);
 
     pageStr += "<li><a class=\"first\" href='#' onclick='jsf_ajax_dataloading(0)' \">처음</a></li>";
+    pageStr += "<li><a class=\"prev\" href='#' onclick='jsf_ajax_dataloading(" + prevPageSet + ")' \"><<</a></li>";
+    pageStr += "<li><a class=\"prevPageSet\" href='#' onclick='jsf_ajax_dataloading(" + prevPage + ")' \"><</a></li>";
     for(var i = startPage; i < endPage; i ++){
         if (page == i){
-            pageStr += "<li><a class=\"active num\" href='#' onclick='jsf_ajax_dataloading(" + i + ")'\">"+ i +"</a></li>";
+            pageStr += "<li><a class=\"active num\" href='#' onclick='jsf_ajax_dataloading(" + i + ")'\">"+ (i+1) +"</a></li>";
         }else{
-            pageStr += "<li><a class=\"num\" href='#' onclick='jsf_ajax_dataloading(" + i + ")'\">"+ i +"</a></li>";
+            pageStr += "<li><a class=\"num\" href='#' onclick='jsf_ajax_dataloading(" + i + ")'\">"+ (i+1) +"</a></li>";
         }
     }
+    pageStr += "<li><a class=\"next\" href='#' onclick='jsf_ajax_dataloading(" + nextPage + ")'\">></a></li>"
+    pageStr += "<li><a class=\"nextPageSet\" href='#' onclick='jsf_ajax_dataloading(" + nextPageSet + ")'\">>></a></li>"
     pageStr += "<li><a class=\"last\" href='#' onclick='jsf_ajax_dataloading(" + (pageTotNum - 1) + ")'\">끝</a></li>"
     pageStr += "</ul>"
     $(".paging").html(pageStr);
 }
+}
 
-// var paging = {
-//     start: 0, //맨 앞
-//     end: 0, //맨 뒤
-//     now: 0, //현재
-//     postNum: 0, //전체 글 개수
-//     bringNum: 10, //몇개씩 가져올꺼니?
-//
-//     init: function(){
-//         paging.start = 0
-//         paging.end = 0
-//         paging.now = 0
-//         paging.postNum = 0
-//
-//         //계산
-//
-//     },
-//
-//     click: function(e){
-//         console.log(e)
-//     },
-//
-//     activeEvent: function(){
-//         var pagingElement = document.querySelector('.paging')
-//         pagingElement.addEventListener('click', function(e){
-//             paging.click(e)
-//         })
-//     }//두번 생성 X
-// }
-//
-// paging.activeEvent()
 
-// var searchForm_02 = document.forms.searchForm_02
-//
-// searchForm_02.addEventListener('submit', e => {
-//     e.preventDefault()
-//     var { workerNm, startday, endday } = searchForm_02
-//
-//     let data = {
-//         workerNm: workerNm.value,
-//         startday: startday.value,
-//         endday: endday.value
-//     }
-//
-//     $.ajax({
-//         type: 'post',
-//         url: 'get_search_data',
-//         data : JSON.stringify(data),
-//         success: function(data){
-//             console.log(data)
-//            if(data.messages == 'false'){
-//             alert('검색 조건을 입력하세요.')
-//            }else{
-//             var workViewTable = document.querySelector('.workViewTable')
-//                 console.log(workViewTable)
-//                 console.log('작동했니?')
-//                 if(data.length != 0){
-//                     workViewTable.innerHTML = ''
-//                     for(let i = 0; i < data.length; i ++){
-//                         workViewTable.innerHTML +=
-//                         `<tr>
-//                             <td>${data[i].group_name_code}</td>
-//                             <td>${data[i].status_name}</td>
-//                             <td>${data[i].coalesce}</td>
-//                          </tr>
-//                         `
-//                     }
-//                 }else{
-//                     workViewTable.innerHTML = `<td colspan='6'>검색 결과가 없습니다.</td>`
-//                 }
-//            }
-//         },
-//         error: function(err){
-//             alert('저장 실패')
-//         }
-//     })
-//
-//     $.ajax({
-//         type: 'post',
-//         url: 'get_search_data',
-//         data : JSON.stringify(data),
-//         success: function(data){
-//             console.log(data)
-//            if(data.messages == 'false'){
-//             alert('검색 조건을 입력하세요.')
-//            }else{
-//             var workViewTable = document.querySelector('.workViewTable')
-//                 console.log(workViewTable)
-//                 console.log('작동했니?')
-//                 if(data.length != 0){
-//                     workViewTable.innerHTML = ''
-//                     for(let i = 0; i < data.length; i ++){
-//                         workViewTable.innerHTML +=
-//                         `<tr>
-//                             <td>${data[i].worker_id? data[i].worker_id: ''}</td>
-//                             <td>${data[i].job_name}</td>
-//                             <td>${data[i].work_name}</td>
-//                             <td>${data[i].video_path}</td>
-//                             <td>${data[i].clip_cnt}</td>
-//                             <td>$</td>
-//                          </tr>
-//                         `
-//                     }
-//                 }else{
-//                     workViewTable.innerHTML = `<td colspan='6'>검색 결과가 없습니다.</td>`
-//                 }
-//            }
-//         },
-//         error: function(err){
-//             alert('저장 실패')
-//         }
-//     })
-// })
+function showData(search, data){
+
+    switch(search){
+        case 'product':
+            const productEl = document.querySelectorAll('.selected-product ul')[1]
+
+            data.forEach(data => {
+                const li = document.createElement('li')
+                li.append(data)
+                productEl.append(li)
+            })
+
+        break
+
+        case 'worker':
+            const workerEl = document.querySelectorAll(`.selected-workman ul`)[1]
+
+            data.forEach(data => {
+                const li = document.createElement('li')
+                li.append(data)
+                workerEl.append(li)
+            })
+
+        // default:
+    }
+}
+
+const inputChangeCheck = document.querySelector('#inputChangeCheck')
+const inputChangeTr = document.querySelectorAll('#inputChangeCheck tr')
+const inputChangeBtn = document.querySelectorAll('#inputChangeCheck tr .save-value')
+
+inputChangeCheck.addEventListener('click', function(e){
+    if(e.target.className.indexOf('save-value') !== -1){
+        e.preventDefault()
+        let value = []
+        // let tr = document.querySelector(e.target.parentNode)
+        for(let i=0; i<inputChangeBtn.length; i++){
+            if(e.target === inputChangeBtn[i]){
+                for(let j=0; j<inputChangeTr[i].children.length; j++){
+                    if(inputChangeTr[i].children[j].querySelector('input')){
+                        if(inputChangeTr[i].children[j].querySelector('input[type="checkbox"]')){
+                            value.push(inputChangeTr[i].children[j].querySelector('input').checked)
+                        }else{
+                            value.push(inputChangeTr[i].children[j].querySelector('input').value)
+                        }
+                    }
+                }
+            }
+        }
+
+        var param = {
+            worker: value[0],
+            worker_id: value[1],
+            workAuth: value[2],
+            inspectAuth: value[3],
+            adminAuth: value[4]
+        }
+
+        $.ajax({
+            type: 'post',
+            url: '/admin/index/userAuth/change_auth',
+            data : JSON.stringify(param),
+            success: function(data){
+                if(data === 'True'){
+                    alert('저장 성공')
+                }else{
+                    alert('저장 실패')
+                }
+            },
+            error: function(err){
+                alert('저장 실패')
+            }
+        })
+    }
+})
+
+let searchData = {
+    workerNm: '',
+    workType: '',
+    workStatus: '',
+    searchBgn: '',
+    searchEnd: '',
+    groupId: ''
+}
+
+

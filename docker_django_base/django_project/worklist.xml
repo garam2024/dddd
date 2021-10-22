@@ -92,9 +92,9 @@
                        (select reg_date from django_app_workhistory h where h.work_id= work_id and h.history_id = (select max(history_id) from django_app_workhistory i where i.work_id= work_id limit 1 )  ) reg_date
                     from
                     (select * from django_app_worklist where 1=1
-                     [if test="worker != ''"]
-                       and (worker_id in (select account_id from django_app_profile where user_name like '%'||#{worker}||'%')
-                       or inspect_id1 in (select account_id from django_app_profile where user_name like '%'||#{worker}||'%'))
+                     [if test="worker != None"]
+                       and (worker_id in (select account_id from django_app_profile where user_name like '%'||'#{worker}'||'%')
+                       or inspect_id1 in (select account_id from django_app_profile where user_name like '%'||'#{worker}'||'%'))
                      [/if]
                     )    w, django_app_tasklist t
                     where 1=1
@@ -116,8 +116,8 @@
                  and code_id in ('interface','normal')) t
               ) l on r.work_status = l.status_code_id
               and r.work_type = l.status_id
-            [if test="startday !='' and endday !=''"]
-               and to_char(reg_date, 'YYYY-MM-DD') between #{startday} and #{endday}
+            [if test="startday !=None and endday !=None"]
+               and to_char(reg_date, 'YYYY-MM-DD') between '#{startday}' and '#{endday}'
             [/if]
            ) a
            where 1=1
@@ -149,7 +149,7 @@
               w.work_type,
               (select code_nm from django_app_code_mst c where c.code_id= w.work_type) work_name,
               (case
-                 when work_status = 'C' or work_status = 'B'   then '가공'
+                 when work_status = 'C'   then '가공'
                  when work_status = 'E'   then '검수'
                  end) job_name,
               split_part(replace(w.video_path,'/media/django_app/action_video/',''),'/',2) video_path,
@@ -159,14 +159,20 @@
               (select reg_date from django_app_workhistory h where h.work_id= w.work_id and h.history_id = (select max(history_id) from django_app_workhistory i where i.work_id= w.work_id limit 1 )  ) run_date
            from django_app_worklist w
            where 1=1
-           and w.work_status in ('C','E','B')
-            [if test="worker != ''"]
-              and (worker_id in (select account_id from django_app_profile where user_name like '%'||#{worker}||'%')
-              or inspect_id1 in (select account_id from django_app_profile where user_name like '%'||#{worker}||'%'))
+           and w.work_status in ('C','E')
+            [if test="worker != None"]
+              and (worker_id in (select account_id from django_app_profile where user_name like '%'||'#{worker}'||'%')
+              or inspect_id1 in (select account_id from django_app_profile where user_name like '%'||'#{worker}'||'%'))
             [/if]
         ) a where 1=1
-            [if test="startday !='' and endday !=''"]
-            and to_char(run_date, 'YYYY-MM-DD') between #{startday} and #{endday}
+            [if test="startday !=None and endday !=None"]
+            and to_char(run_date, 'YYYY-MM-DD') between '#{startday}' and '#{endday}'
+            [/if]
+            [if test="startday != None and endday == None"]
+                and to_char(run_date,'YYYY-MM-DD') >= '#{startday}'
+            [/if]
+            [if test="endday != None and startday == None"]
+                and to_char(run_date,'YYYY-MM-DD') &lt;=  '#{endday}'
             [/if]
 
     </select>
@@ -203,30 +209,7 @@
 
         <select id="selectKeyidIfs">
             select * from
-             ( select * ,
-                        (select count(*) from django_app_worklist where 1 = 1
-                    [if test="workerNm != ''"]
-                    and (worker_name1 =  '#{workerNm}'
-                         or worker_name2 =  '#{workerNm}'
-                         or worker_name3 =  '#{workerNm}'
-                         or worker_name4 = '#{workerNm}')
-                    [/if]
-                    [if test="workType != ''"]
-                    and  str_type =   '#{workType}'
-                    [/if]
-                    [if test="workerNm != ''"]
-                    and  work_status =   '#{workStatus}'
-                    [/if]
-                    [if test="groupId != 'all'"]
-                    and group_id = '#{groupId}'
-                    [/if]
-                    [if test="groupId == 'all'"]
-                    and group_id = 'tbit' or group_id = 'gjac' or group_id = 'dtw'
-                    [/if]
-                    [if test="searchBgn != 'all' and  searchEnd !=''"]
-                    and reg_date BETWEEN TO_TIMESTAMP('#{searchBgn}', 'YYYY-MM-DD') AND TO_TIMESTAMP('#{searchEnd}', 'YYYY-MM-DD')  + interval '1 day'
-                     [/if]
-                    ) tot_cnt
+             ( select *
                 from(
                     select  * ,
                         (select dap.user_name from django_app_profile dap where dap.account_id = daw.worker_id) worker_name1,
@@ -234,19 +217,42 @@
                         (select dap.user_name from django_app_profile dap where dap.account_id = daw.inspect_id2) worker_name3,
                         (select dap.user_name from django_app_profile dap where dap.account_id = daw.inspect_id3) worker_name4,
                         (select dacm.code_nm from django_app_code_mst dacm where dacm.code_id = daw.work_status ) str_status,
-                        (select dacm.code_nm from django_app_code_mst dacm where dacm.code_id = daw.work_type) str_type
+                        (select dacm.code_nm from django_app_code_mst dacm where dacm.code_id = daw.work_type) str_type,
+                        (select count(*) from django_app_worklist where 1 = 1
+                        [if test="workerNm != None"]
+                        and (worker_name1 =  '#{workerNm}'
+                             or worker_name2 =  '#{workerNm}'
+                             or worker_name3 =  '#{workerNm}'
+                             or worker_name4 = '#{workerNm}')
+                        [/if]
+                        [if test="workType != None"]
+                        and  work_type =   '#{workType}'
+                        [/if]
+                        [if test="workStatus != None"]
+                        and  work_status =   '#{workStatus}'
+                        [/if]
+                        [if test="groupId != 'all'"]
+                        and group_id = '#{groupId}'
+                        [/if]
+                        [if test="groupId == 'all'"]
+                        and group_id = 'tbit' or group_id = 'gjac' or group_id = 'dtw'
+                        [/if]
+                        [if test="searchBgn != 'all' and  searchEnd !=None"]
+                        and reg_date BETWEEN TO_TIMESTAMP('#{searchBgn}', 'YYYY-MM-DD') AND TO_TIMESTAMP('#{searchEnd}', 'YYYY-MM-DD')  + interval '1 day'
+                         [/if]
+                        ) tot_cnt
                     from django_app_worklist daw) b
             where 1 = 1 order by work_id ) a where 1 = 1
-            [if test="workerNm != ''"]
+            [if test="workerNm != None"]
             and (worker_name1 =  '#{workerNm}'
                  or worker_name2 =  '#{workerNm}'
                  or worker_name3 =  '#{workerNm}'
                  or worker_name4 =  '#{workerNm}')
             [/if]
-            [if test="workType != ''"]
-            and  str_type =   '#{workType}'
+            [if test="workType != None"]
+            and  work_type =   '#{workType}'
             [/if]
-            [if test="workerNm != ''"]
+            [if test="workStatus != None"]
             and  work_status =   '#{workStatus}'
             [/if]
             [if test="groupId != 'all'"]
@@ -255,7 +261,7 @@
             [if test="groupId == 'all'"]
             and group_id = 'tbit' or group_id = 'gjac' or group_id = 'dtw'
             [/if]
-            [if test="searchBgn != 'all' and  searchEnd !=''"]
+            [if test="searchBgn != 'all' and  searchEnd !=None"]
             and reg_date BETWEEN TO_TIMESTAMP('#{searchBgn}', 'YYYY-MM-DD') AND TO_TIMESTAMP('#{searchEnd}', 'YYYY-MM-DD')  + interval '1 day'
              [/if]
              #{limit}

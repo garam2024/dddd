@@ -1,3 +1,5 @@
+import copy
+
 import psycopg2
 from xml.etree.ElementTree import parse
 import json
@@ -186,24 +188,49 @@ class sqlMethod:
                 ifStrArr = ifStr.split("((")
 
             ifpro = "N"
+
+            ifcmd = []
             for ifStr in ifStrArr:
                 if ifStr.find("==") > 0:
                     ifStrArr = ifStr.split("==")
-                    print("%s == %s" % (parameter[ifStrArr[0].strip()], ifStrArr[1].strip()))
 
-                    if "'"+parameter[ifStrArr[0].strip()]+"'" == ifStrArr[1].strip().replace("''", ""):
+                    ifstrOne = parameter[ifStrArr[0].strip()]
+                    ifstrTow = ifStrArr[1].strip().replace("'", "")
+                    if ifstrTow=='None':
+                        ifstrTow = ''
+
+                    print("[%s] == [%s]" % (ifstrOne, ifstrTow))
+
+                    if ifstrOne == ifstrTow:
                         ifpro = "Y"
                     else:
                         ifpro = "N"
+                    ifcmd.append(copy.deepcopy(ifpro))
 
                 if ifStr.find("!=") > 0:
                     ifStrArr = ifStr.split("!=")
-                    print("%s != %s" % (parameter[ifStrArr[0].strip()], ifStrArr[1].strip()))
 
-                    if "'"+parameter[ifStrArr[0].strip()]+"'" != ifStrArr[1].strip().replace("''", ""):
+                    ifstrOne = parameter[ifStrArr[0].strip()]
+                    ifstrTow = ifStrArr[1].strip().replace("'","")
+                    if ifstrTow == 'None':
+                        ifstrTow = ''
+
+                    print("[%s] != [%s]" % (ifstrOne, ifstrTow))
+
+                    if ifstrOne != ifstrTow:
                         ifpro = "Y"
                     else:
                         ifpro = "N"
+                    ifcmd.append(copy.deepcopy(ifpro))
+
+            #조건값이 참인지 거짓인지 판별
+            ifpro = "N"
+            for tif in ifcmd:
+                if tif =="N":
+                    ifpro = "N"
+                    break
+                else:
+                    ifpro = "Y"
 
             if ifpro =="N" :  # if값이 참이 아니면
                 sqlStr = sqlStrStart_Str + sqlStrend_str

@@ -558,3 +558,5 @@ class interface_guide_list(TemplateView):
 def get_statusDic(request):
     result = dbinfo.status
     return JsonResponse(result, safe = False)
+
+

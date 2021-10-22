@@ -2,6 +2,7 @@
  * 구간 클립 정보 (Key : regionId, Value : Frame(array))
  */
 
+var task_id = 0;
  var clipInfo = new Map();
 
  const clipsContainer = document.querySelector('.clips-container')
@@ -41,59 +42,64 @@
  })
  
  clipsContainer.addEventListener('dblclick', e => {
+
+
+    let region = wavesurfer.regions.list[e.target.parentElement.id]
+    region.play();
+
      // e.target.id는 regionId
      console.log('더블 클릭')
 //      console.log(e.target.id);
      e.stopPropagation();
- 
+
      // 삭제 시 tmpImage가 삭제된 regionId를 가지므로 오류발생
      var imageAlt = imgElement.getAttribute('alt');
      if (imageAlt != null) {
          var imageInfo = imgElement.getAttribute('alt').split("^");
          if(clipInfo.has(imageInfo[0])){
              saveSkeleton();
-         }  
+         }
      }
- 
+
      let div = e.target.closest('DIV')
- 
+
      if (!div.id || div.id === 'clips') return
      let _div = document.getElementById(div.id)
      let video = _div.querySelector('video')
      // console.log(video)
- 
+
      video.pause()
      clearCanvas();
      editAnnotation(wavesurfer.regions.list[div.id])
      showNote(wavesurfer.regions.list[div.id])
      // setFrames -> createFrames -> showFrame
      setFrames(wavesurfer.regions.list[div.id])
- 
+
      function clipHl(){
          // 클립 선택한 것 하이라이트
          var clips = document.querySelectorAll('#clips div video');
- 
+
          for(let elem of clips){
              elem.classList.remove('yellow');
          }
-         
+
          var highlight = document.querySelector(`#clips #${wavesurfer.regions.list[div.id].id} video`);
          highlight.classList.add('yellow');
-         
+
           //경진
           if (mode == '작업' || mode == '재작업'){
              document.getElementById("modelLoad").disabled = false;
              document.getElementById("modelReload").disabled = false;
              document.querySelector(".btn-danger").disabled = false;
              document.getElementById("handpose").disabled = false;
-             document.getElementById("note").disabled = false;   
+             document.getElementById("note").disabled = false;
          }
 
          viewNowClipRejection()
      }
      clipHl();
- 
- 
+
+
      // 세트, 현재 클립 번호(0부터 시작한다.)
      var clipsObject = document.querySelectorAll('#clips div video');
      var yellow_num;
@@ -106,7 +112,7 @@
      nowClip = [];
      nowClip.push(yellow_num);
      console.log(nowClip);
- 
+
      // 로딩화면
      const frames = document.querySelector(".frames-container");
      const bcRect = frames.getBoundingClientRect();
@@ -114,75 +120,77 @@
      loader.style.top = bcRect.top+(bcRect.height-120)/2+"px";
      // console.log(bcRect.top)
      loader.style.left = bcRect.left+(bcRect.width-120)/2+"px";
- 
+
      loader.classList.toggle("hide");
- 
+
      setTimeout(function(){
          loader.classList.toggle("hide");
      },1000);
- 
+
      // // 클립(.json) 내보내기 버튼 비활성화
      // const target = document.getElementById('saveResult');
      // target.disabled = true;
  })
- 
+
  function statusDisplayElement(){
      var _div =  document.createElement('div')
      _div.classList.add('clip-status')
      return _div
  }
- 
+
  async function createClip(region, isNowClip) {
      // update clip
      console.count();
-     if (document.getElementById(region.id)) return await (function () {
-         console.log("createClip region.id : " + region.id)
-         updateClip(region)
-         if (document.getElementById('frames').children.length) {
-             setFrames(region)
-         }
-     })()
- 
- 
+     //211020
+     // if (document.getElementById(region.id)) return await (function () {
+     //     console.log("createClip region.id : " + region.id)
+     //     updateClip(region)
+     //     if (document.getElementById('frames').children.length) {
+     //         setFrames(region)
+     //     }
+     // })()
+
+
      // create clip
      let clips = document.querySelector("#clips")
      let clip = document.createElement('div')
      let video = document.createElement('video')
- 
+
      clip.appendChild(video)
      clip.appendChild(statusDisplayElement())
      clipStatusMark(clip.querySelector('.clip-status'), region.data.status)
- 
+
      clip.id = region.id;
      video.src = orgVideo.src + '#t=' + region.start + ',' + region.end;
      video.type = 'video/mpeg';
      // video.id = region.id;
- 
+
      // highlight the now created clip
      var clipsVideo = document.querySelectorAll('#clips div video');
      for (var i = 0; i < clipsVideo.length; i++) {
          clipsVideo[i].classList.remove('yellow');
      }
      video.classList.add('yellow')
- 
+
      clips.appendChild(clip);
- 
+
      //경진
      if (mode == '작업' || mode == '재작업'){
          document.getElementById("modelLoad").disabled = false;
          document.getElementById("modelReload").disabled = false;
          document.querySelector(".btn-danger").disabled = false;
          document.getElementById("handpose").disabled = false;
-         document.getElementById("note").disabled = false;   
+         document.getElementById("note").disabled = false;
      }
- 
-     if(isNowClip){
-         // set frames
-         setFrames(region)
- 
-     }
+
+     //211020
+     // if(isNowClip){
+     //     // set frames
+     //     setFrames(region)
+     //
+     // }
  }
- 
+
  function updateClip(region) {
      console.log('업데이트 작동')
      console.log(region)
@@ -190,7 +198,7 @@
      let video = clip.querySelector('video')
      video.src = orgVideo.src + '#t=' + region.start + ',' + region.end;
  }
- 
+
  function sortClip() {
      let array = []
      let clips = document.querySelector("#clips")
@@ -442,20 +450,21 @@
 
  
  function statusWorking(){
+    var attributesNum = document.querySelector('#attributes').value
      for(let key in wavesurfer.regions.list){
-         if(wavesurfer.regions.list[key].attributes === (nowSet * 5) + nowClip[0]){//attribute가 맞을 
- 
+         if(wavesurfer.regions.list[key].attributes == attributesNum){
+             region = wavesurfer.regions.list[key]
              let element = document.getElementById(wavesurfer.regions.list[key].id)//리전 아이디로 요소 선택
- 
-             if(wavesurfer.regions.list[key].data['status'] !== '반려' && wavesurfer.regions.list[key].data['status'] !== '완료'){
+             if(region.data['status'] !== '반려' || region.data['status'] !== '완료'){
+                 console.log('업데이트')
                  //반려또는 완료가 아닐 때 작업중으로 업데이트 한다.
-                 wavesurfer.regions.list[key].data['status'] = '작업중'
+                 region.data['status'] = '작업중'
                  // console.log('조건 1: ')
                  // console.log(wavesurfer.regions.list[key])
                  clipStatusMark(element.querySelector('.clip-status'), '작업중')
- 
-                 wavesurfer.regions.list[key].data.note = document.forms.edit.note.value
-                 wavesurfer.regions.list[key].data.handpose = document.forms.edit.handpose.value
+
+                 region.data.note = document.forms.edit.note.value
+                 region.data.handpose = document.forms.edit.handpose.value
              }
 
              return (function(){
@@ -483,18 +492,18 @@
                else {
                 task_api_url = 'task_api'
                        var param = {
-                     id: wavesurfer.regions.list[key].id,
-                     start: form.elements.start.value,
-                     end: form.elements.end.value,
-                     attributes: form.elements.attributes.value,
-                     group: document.getElementById("groupId").value,
-                     data: {
-                         note: form.elements.note.value,
-                         handpose: form.elements.handpose.value,
-                         skeleton: wavesurfer.regions.list[key].data.skeleton,
-                         status:  wavesurfer.regions.list[key].data.status
+                         id: wavesurfer.regions.list[key].id,
+                         start: form.elements.start.value,
+                         end: form.elements.end.value,
+                         attributes: form.elements.attributes.value,
+                         group: document.getElementById("groupId").value,
+                         data: {
+                             note: form.elements.note.value,
+                             handpose: form.elements.handpose.value,
+                             skeleton: wavesurfer.regions.list[key].data.skeleton,
+                             status:  wavesurfer.regions.list[key].data.status
+                         }
                      }
-                 }
                 }
 
  
@@ -509,6 +518,7 @@
                          //여기에 클립 완료 표시
                          //상민
                          // alert("정보가 업데이트되었습니다.")
+                         console.log('정보가 저장')
                          setMarkInit()            
                      },
                      error : function(e){

@@ -13,11 +13,13 @@ urlpatterns = [
 
     ## 관리자 메인 페이지
     path('index/', admin_views.adminIndex.as_view(), name='admin_index'),
-    path('index/change_auth', admin_views.changeAuth, name='change_auth'), #(작업권한, 검수권한) 바꾸기
+    path('userAuth/',admin_views.userAuth.as_view(), name ='userAuth'),
+    path('index/userAuth/change_auth', admin_views.changeAuth, name='change_auth'), #(작업권한, 검수권한) 바꾸기
     path('index/get_search_data', admin_views.getSearchData, name='get_search_data'), #아작스 서치
     path('index/adminview', admin_return_views.adminTaskCheck.as_view(), name='adminview'),
     path("index/get_statusDic", base_views.get_statusDic, name = "get_statusDic"),
     path("index/adminview/get_statusDic", base_views.get_statusDic, name = "get_statusDic"),
+    path("index/progress", base_views.get_statusDic, name = "progress"),
 
     path('index/adminview/admin_complete', admin_return_views.admin_complete, name='admin_complete'),
     path('index/adminview/task_api', admin_return_views.task_api, name='task_api'),

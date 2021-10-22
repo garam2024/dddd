@@ -76,7 +76,7 @@
                     <th>구분</th>
                     <th>작업 종류</th>
                     <th>검수 진행</th>
-                    <th>검수 포기</th>
+                    <!--<th>검수 포기</th>-->
                 </tr>
             </thead>
             
@@ -93,12 +93,12 @@
                         <button type="button" class="choice" onclick='formMessage(event)'>작업</button>
                     </form>
                     </td>
-                    <td>
+                   <!-- <td>
                       <form action="{% url 'inspect_cancel_1st' task.work_id %}" method="post">
                       {% csrf_token %}
                           <button type="button" class="choice_1" onclick='formMessage(event)'>포기</button>
                       </form>
-                      </td>
+                      </td>-->
                       {% empty %}
                       <tr>
                         <td colspan="4">

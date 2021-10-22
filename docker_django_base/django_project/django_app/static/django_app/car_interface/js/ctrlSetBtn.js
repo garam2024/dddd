@@ -14,9 +14,12 @@ function setClipButton(btnLen){
     setMarkInit()
 }
 
+var setBtnRun = false
+
 // ��ư ��������
 $(document).on("click", "#sets", function(e){
-
+    if(setBtnRun) return
+    setBtnRun = true
     var i = $(this).index();
     // ?���?
     
@@ -198,6 +201,7 @@ $(document).on("click", "#sets", function(e){
     // target.disabled = true;
     setMarkInit()
     viewNowClipRejection()
+    setBtnRun = false
 });
 
 
@@ -254,6 +258,10 @@ function setMarkInit(){
     for(let i = 0; i < sets.length; i++){
         for(let j = 0; j < sptRegions[i].length; j++){
             setMark(i, setCheck(sptRegions[i]))
+        }
+
+        if(sptRegions[i].length === 0){
+            document.querySelectorAll('#sets')[i].remove()
         }
     }
 }

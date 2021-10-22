@@ -27,6 +27,7 @@ var GLOBAL_ACTIONS = { // eslint-disable-line
                 time: endTime,
                 label: "END"
             })
+
             region = window.wavesurfer.addRegion({
                 start: startTime,
                 end: endTime,
@@ -37,8 +38,7 @@ var GLOBAL_ACTIONS = { // eslint-disable-line
             // sortClip();
 
             window.wavesurfer.clearMarkers();
-
-
+            if(regionOver(region)) return
 
 
 
@@ -67,7 +67,8 @@ var GLOBAL_ACTIONS = { // eslint-disable-line
 
             if (!checkInRegionTag) { // if create region
                 // 생성한 region에는 attributes, note, handpose, skeleton 값이 없으므로 설정
-                region.attributes = 0
+                region.attributes = task_id
+                task_id++
                 region.data = {
                     "note": "",
                     "handpose": "",
@@ -94,7 +95,7 @@ var GLOBAL_ACTIONS = { // eslint-disable-line
 
             for (var k = 0; k < array.length; k++) {
                 // set the attributes value of region order by acending
-                array[k].attributes = k;
+                // array[k].attributes = k;
                 // console.log("array k attributes-------------------------------")
                 // console.log(array[k].attributes)
 

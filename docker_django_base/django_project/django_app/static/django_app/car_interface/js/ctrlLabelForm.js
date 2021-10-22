@@ -134,7 +134,8 @@ const hand_labelling = {
                      id: wavesurfer.regions.list[key].id,
                      start: form.elements.start.value,
                      end: form.elements.end.value,
-                     attributes: form.elements.attributes.value,
+                     // attributes: form.elements.attributes.value,
+                    attributes: task_id,
                      group: document.getElementById("groupId").value,
                      work_id : document.getElementById("work_id").value,
                      data: {
@@ -204,6 +205,7 @@ const hand_labelling = {
   
 
           setTimeout(chkFinalCmpl, 2000)
+          $(':focus').blur();
   
       };
   
@@ -242,7 +244,7 @@ const hand_labelling = {
   
   //상민
   function clipStatusMark(clipStatus, status){
-    if(!status) return
+    if(!status || !clipStatus) return
   
     switch(status){
       case '완료':
@@ -264,6 +266,8 @@ const hand_labelling = {
       case '작업중':
           clipStatus.innerHTML = ''
           clipStatus.innerHTML = `<i class='glyphicon glyphicon-fire'></i> 작업중...`
+          clipStatus.classList.remove('complete')
+          clipStatus.classList.remove('rejection')
           clipStatus.classList.add('working')
       break
   

@@ -9,3 +9,4 @@ pycryptodome
 pillow
 djangorestframework
 bson
+openpyxl

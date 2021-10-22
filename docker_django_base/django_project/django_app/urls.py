@@ -131,7 +131,7 @@ urlpatterns = [
     path("re_work_process/<str:task_num>/<str:work_type>/get_statusDic", base_views.get_statusDic, name = "get_statusDic"),
 
 
-    # garam 여기까지
+  ##
 
 
     ## 1차 검수 페이지

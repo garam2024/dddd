@@ -32,6 +32,7 @@ function Delete_Xml() {
            success: function() {
        }
     });
+     task_id = 0;
 }
 
 inputXmlFile.addEventListener('change', getFile)
@@ -75,6 +76,7 @@ function getFile(event) {
                                 "status": param.data.status
                             }
                         }
+
 
                         $.ajax({
                             type : 'POST',
@@ -189,6 +191,7 @@ function xmlText2Json(content){
     let videoItem = objson.BandicutProjectFile.VideoItem;
 
     let videoItemLen = Object.keys(videoItem).length;
+
     // console.log(videoItemLen);
     var regions = new Array();
     var elmJson = new Object();
@@ -216,6 +219,7 @@ function xmlText2Json(content){
         regions.push(elmJson);
 
     }
+    task_id = videoItemLen++
     // console.log(regions)
 
     return regions            
